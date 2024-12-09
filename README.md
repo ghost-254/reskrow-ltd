@@ -1,6 +1,3 @@
-Certainly! Below is a complete and professional README template for your company, Reskrow, which you can use as part of your project documentation. This README includes sections that outline the purpose of your web application, how to set it up locally, and how to use it, along with contact and support information.
-
-```markdown
 # Reskrow Real Estate Platform
 
 Welcome to the official repository for the Reskrow Real Estate Platform. Reskrow is a full-stack web application designed to streamline the process of real estate transactions, including buying, selling, and renting properties. Built with Next.js, React, Tailwind CSS, and Supabase, this platform offers users a comprehensive set of features to enhance the real estate experience.
@@ -74,7 +71,7 @@ For support with the Reskrow platform, you can reach out through the following c
 
 ## Authors
 
-- **Ghost-254** - *Senior Full-stack Developer* - [YourGithub](https://github.com/ghost-254)
+- **Ghost-254** - *Senior Full-stack Developer* - [MyGithub](https://github.com/ghost-254)
 
 ## License
 
@@ -90,4 +87,3 @@ Visit our official website: https://reskrow.com for more information.
 - Thanks to everyone who has contributed to this project!
 
 Visit our website: [reskrow.com](https://reskrow.com) for more information.
-```

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MobileMenu } from './MobileMenu';
+import { FiMenu, FiX } from 'react-icons/fi'
 
 export default async function Header() {
   const supabase = await createClient()
@@ -58,12 +59,12 @@ export default async function Header() {
             <Link href="/contact" className="text-foreground hover:text-primary">Contact Us</Link>
           </nav>
           <div className="flex items-center space-x-4">
-            <ThemeSwitcher />
             {user ? (
               <>
                 <Button asChild variant="ghost">
                   <Link href="/properties/create">List Property</Link>
                 </Button>
+                <ThemeSwitcher />
                 <UserNav user={user} />
               </>
             ) : (
