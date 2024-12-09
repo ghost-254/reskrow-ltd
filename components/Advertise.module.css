@@ -1,0 +1,114 @@
+.advert {
+    background: rgb(71 85 105);
+    background-size: cover;
+    background-position: center;
+    padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .advertise {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #1c3b70;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    animation: slideIn 1.5s ease-out forwards, pulse 3s infinite alternate;
+  }
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.05);
+    }
+  }
+  
+  .advert span:first-of-type {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .advert span:last-of-type {
+    display: block;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+  }
+  
+  .advert button {
+    background-color: #28a745;
+    color: #ffffff;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .advert button:hover {
+    background-color: #218838;
+    transform: scale(1.1);
+  }
+  
+  .advert a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  @media (max-width: 768px) {
+    .advert div {
+      padding: 10px;
+    }
+  
+    .advert span:first-of-type {
+      font-size: 1.8rem;
+    }
+  
+    .advert span:last-of-type {
+      font-size: 1.1rem;
+    }
+  
+    .advert button {
+      padding: 8px 14px;
+      font-size: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .advert span:first-of-type {
+      font-size: 1.5rem;
+    }
+  
+    .advert span:last-of-type {
+      font-size: 1rem;
+    }
+  
+    .advert button {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+    }
+  }
+  
+  

@@ -17,7 +17,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-blue-800 dark:bg-gray-800 text-white">
+    <footer className="bg-blue-800 dark:bg-blue-950 text-white">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
         <div className="lg:col-span-2">
@@ -47,6 +47,7 @@ export default function Footer() {
               <li><Link href="/blog" className="hover:underline">Blog</Link></li>
               <li><Link href="/faq" className="hover:underline">FAQ</Link></li>
               <li><Link href="/contact" className="hover:underline">Contact Us</Link></li>
+              <li><Link href="/advertise" className="hover:underline">Advertisements</Link></li>
             </ul>
           </div>
           <div>

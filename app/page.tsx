@@ -1,14 +1,19 @@
+//app/page.tsx
+
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
-import CountUp from 'react-countup'
-import { useInView } from 'react-intersection-observer'
-import { LogoSlider } from '@/components/LogoSlider'
-import { PopularProperties } from '@/components/PopularProperties'
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import CountUp from 'react-countup';
+import { useInView } from 'react-intersection-observer';
+import { LogoSlider } from '@/components/LogoSlider';
+import { PopularProperties } from '@/components/PopularProperties';
+import ContactSection from '@/components/ContactSection';
+import Advertise from '@/components/Advertise';
+import ValueSection from '@/components/ValueSection';
 
 export default function Home() {
   const { ref, inView } = useInView({
@@ -112,6 +117,9 @@ export default function Home() {
 
       <LogoSlider />
       <PopularProperties />
+      <Advertise />
+      <ValueSection />
+      <ContactSection />
     </div>
   )
 }
