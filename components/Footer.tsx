@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FaSquareXTwitter, FaSquareInstagram, FaSquareWhatsapp, FaSquareYoutube } from "react-icons/fa6";
 import { FaFacebookSquare, FaRedditSquare, FaTumblrSquare } from "react-icons/fa";
 import { AiFillTikTok } from "react-icons/ai";
+import Image from "next/image";
 
 const socialLinks = [
   { name: 'Instagram', icon: FaSquareInstagram, href: 'https://www.instagram.com/reskrow_ke/' },
@@ -19,8 +20,16 @@ export default function Footer() {
     <footer className="bg-blue-800 dark:bg-gray-800 text-white">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-2">
-            <h3 className="text-2xl font-bold mb-4">Reskrow Real Estate</h3>
+        <div className="lg:col-span-2">
+            <Link href="/" className="inline-block mb-4">
+              <Image
+                src="/logo.png"
+                alt="Reskrow Logo"
+                width={150}
+                height={50}
+                className="h-10 w-auto brightness-0 invert"
+              />
+            </Link>
             <p className="mb-4">Find your dream property with Reskrow Real Estate</p>
           </div>
           <div>

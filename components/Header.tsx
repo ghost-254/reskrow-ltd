@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from './ui/button'
 import { UserNav } from './UserNav'
 import { ThemeSwitcher } from './ThemeSwitcher'
@@ -24,8 +25,15 @@ export default async function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              Reskrow
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="Reskrow Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto dark:brightness-0 dark:invert"
+                priority
+              />
             </Link>
           </div>
           <nav className="hidden md:flex md:space-x-8">
