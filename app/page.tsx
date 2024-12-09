@@ -8,6 +8,7 @@ import { Search } from 'lucide-react'
 import CountUp from 'react-countup'
 import { useInView } from 'react-intersection-observer'
 import { LogoSlider } from '@/components/LogoSlider'
+import { PopularProperties } from '@/components/PopularProperties'
 
 export default function Home() {
   const { ref, inView } = useInView({
@@ -110,6 +111,7 @@ export default function Home() {
       </section>
 
       <LogoSlider />
+      <PopularProperties />
     </div>
   )
 }

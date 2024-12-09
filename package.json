@@ -33,6 +33,9 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "react-intersection-observer": "^9.13.1",
+    "react-spinners": "^0.15.0",
+    "reskrow-ltd": "file:",
+    "swiper": "^11.1.15",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
   },
