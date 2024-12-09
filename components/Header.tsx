@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MobileMenu } from './MobileMenu';
-import { FiMenu, FiX } from 'react-icons/fi'
 
 export default async function Header() {
   const supabase = await createClient()
@@ -63,8 +62,7 @@ export default async function Header() {
               <>
                 <Button asChild variant="ghost">
                   <Link href="/properties/create">List Property</Link>
-                </Button>
-                <ThemeSwitcher />
+                </Button> 
                 <UserNav user={user} />
               </>
             ) : (
@@ -72,6 +70,7 @@ export default async function Header() {
                 <Link href="/auth">Sign Up / Sign In</Link>
               </Button>
             )}
+            <ThemeSwitcher />
             <MobileMenu />
           </div>
         </div>

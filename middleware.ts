@@ -31,13 +31,26 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
+  // List of paths that require authentication
+  const protectedPaths = [
+    '/properties/create',
+    '/properties/edit',
+    '/buy',
+    '/sell',
+    '/rent',
+    '/profile',
+    '/saved-properties',
+    '/my-listings'
+  ]
+
+  const isProtectedPath = protectedPaths.some(path => 
+    request.nextUrl.pathname.startsWith(path)
+  )
+
+  if (isProtectedPath && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth'
+    url.searchParams.set('redirectTo', request.nextUrl.pathname)
     return NextResponse.redirect(url)
   }
 

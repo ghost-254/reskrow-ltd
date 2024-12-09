@@ -2,9 +2,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { PriceCalculator } from "@/components/PriceCalculator";
 import { EscrowSteps } from "@/components/EscrowSteps";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Clock, DollarSign } from 'lucide-react';
+import { Shield, Lock, Clock, DollarSign, ArrowRight } from 'lucide-react';
 import '@/styles.css';
 import Image from "next/image";
+import Link from "next/link";
 
 export default function EscrowPage() {
   return (
@@ -119,8 +120,14 @@ export default function EscrowPage() {
             Whether you're buying or selling, our escrow services ensure a safe and smooth transaction.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" className="text-lg px-8 py-6">I'm Buying</Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6">I'm Selling</Button>
+            <Button size="lg" className="text-lg px-8 py-6">
+              <Link href="/buy">I'm Buying</Link>
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6" >
+              <Link href="/sell">I'm Selling</Link>
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
         </div>
       </section>
