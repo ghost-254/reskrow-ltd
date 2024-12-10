@@ -84,7 +84,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-4xl font-bold text-primary">
-                    <CountUp end={2000} duration={2.5} start={inView ? 0 : undefined} />
+                    <CountUp end={5000} duration={2.5} start={inView ? 0 : undefined} />
                     <span className="text-accent">+</span>
                   </p>
                   <p className="text-sm text-muted-foreground">Happy Customers</p>

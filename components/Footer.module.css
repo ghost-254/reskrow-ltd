@@ -1,0 +1,47 @@
+@keyframes fire {
+  0% { box-shadow: 0 0 5px #ff6600, 0 0 10px #ff6600, 0 0 15px #ff6600, 0 0 20px #ff6600; }
+  50% { box-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 30px #ff6600, 0 0 40px #ff6600; }
+  100% { box-shadow: 0 0 5px #ff6600, 0 0 10px #ff6600, 0 0 15px #ff6600, 0 0 20px #ff6600; }
+}
+
+.fireLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.fireLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ff6600, #ffcc00);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.fireLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.fireIcon {
+  transition: all 0.3s ease;
+}
+
+.fireLink:hover .fireIcon {
+  animation: fire 1.5s infinite;
+  border-radius: 50%;
+}
+
+.fireText {
+  transition: all 0.3s ease;
+}
+
+.fireLink:hover .fireText {
+  text-shadow: 0 0 5px #ff6600, 0 0 10px #ff6600;
+}
+

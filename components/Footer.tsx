@@ -3,6 +3,7 @@ import { FaSquareXTwitter, FaSquareInstagram, FaSquareWhatsapp, FaSquareYoutube 
 import { FaFacebookSquare, FaRedditSquare, FaTumblrSquare } from "react-icons/fa";
 import { AiFillTikTok } from "react-icons/ai";
 import Image from "next/image";
+import styles from './Footer.module.css';
 
 const socialLinks = [
   { name: 'Instagram', icon: FaSquareInstagram, href: 'https://www.instagram.com/reskrow_ke/' },
@@ -35,28 +36,29 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="hover:underline">About Us</Link></li>
-              <li><Link href="/properties" className="hover:underline">Properties</Link></li>
-              <li><Link href="/rentals" className="hover:underline">Rentals</Link></li>
-              <li><Link href="/escrow" className="hover:underline">Escrow Services</Link></li>
+              <li><Link href="/properties" className={`hover: ${styles.fireLink}`}>Properties</Link></li>
+              <li><Link href="/buy" className={`hover: ${styles.fireLink}`}>Buy</Link></li>
+              <li><Link href="/rent" className={`hover: ${styles.fireLink}`}>Rent</Link></li>
+              <li><Link href="/sell" className={`hover: ${styles.fireLink}`}>Sell</Link></li>
+              <li><Link href="/escrow" className={`hover: ${styles.fireLink}`}>Escrow Services</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
-              <li><Link href="/blog" className="hover:underline">Blog</Link></li>
-              <li><Link href="/faq" className="hover:underline">FAQ</Link></li>
-              <li><Link href="/contact" className="hover:underline">Contact Us</Link></li>
-              <li><Link href="/advertise" className="hover:underline">Advertisements</Link></li>
-
+              <li><Link href="/about" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>About Us</Link></li>
+              <li><Link href="/blog" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Blog</Link></li>
+              <li><Link href="/faq" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>FAQ</Link></li>
+              <li><Link href="/contact" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Contact Us</Link></li>
+              <li><Link href="/advertise" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Advertisements</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li><Link href="/terms" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms of Service</Link></li>
-              <li><Link href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Privacy Policy</Link></li>
-              <li><Link href="/escrow-terms" target="_blank" rel="noopener noreferrer" className="hover:underline">Escrow Terms</Link></li>
+              <li><Link href="/terms" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Terms of Service</Link></li>
+              <li><Link href="/privacy" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Privacy Policy</Link></li>
+              <li><Link href="/escrow-terms" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Escrow Terms</Link></li>
             </ul>
           </div>
         </div>
@@ -64,15 +66,15 @@ export default function Footer() {
           <h4 className="text-lg font-semibold mb-4">Connect with Us</h4>
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {socialLinks.map((link) => (
-              <li key={link.name} className="flex items-center">
+              <li key={link.name}>
                 <a
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center hover:underline"
+                  className={`flex items-center hover: ${styles.fireLink}`}
                 >
-                  <link.icon className="w-5 h-5 mr-2" />
-                  <span className="text-sm">{link.name}</span>
+                  <link.icon className={`w-5 h-5 mr-2 ${styles.fireIcon}`} />
+                  <span className={`text-sm ${styles.fireText}`}>{link.name}</span>
                 </a>
               </li>
             ))}
