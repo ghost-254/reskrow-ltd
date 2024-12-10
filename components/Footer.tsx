@@ -48,13 +48,15 @@ export default function Footer() {
               <li><Link href="/faq" className="hover:underline">FAQ</Link></li>
               <li><Link href="/contact" className="hover:underline">Contact Us</Link></li>
               <li><Link href="/advertise" className="hover:underline">Advertisements</Link></li>
+
             </ul>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li><Link href="/terms" className="hover:underline">Terms of Service</Link></li>
-              <li><Link href="/privacy" className="hover:underline">Privacy Policy</Link></li>
+              <li><Link href="/terms" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms of Service</Link></li>
+              <li><Link href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Privacy Policy</Link></li>
+              <li><Link href="/escrow-terms" target="_blank" rel="noopener noreferrer" className="hover:underline">Escrow Terms</Link></li>
             </ul>
           </div>
         </div>
