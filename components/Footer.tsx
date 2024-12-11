@@ -59,6 +59,8 @@ export default function Footer() {
               <li><Link href="/terms" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Terms of Service</Link></li>
               <li><Link href="/privacy" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Privacy Policy</Link></li>
               <li><Link href="/escrow-terms" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Escrow Terms</Link></li>
+              <li><Link href="/disclaimer" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Disclaimer</Link></li>
+              <li><Link href="/dispute-resolution" target="_blank" rel="noopener noreferrer" className={`hover: ${styles.fireLink}`}>Dispute Resolution</Link></li>
             </ul>
           </div>
         </div>

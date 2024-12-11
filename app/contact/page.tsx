@@ -155,7 +155,7 @@ export default function ContactPage() {
           <CardContent>
             <div className="aspect-w-16 aspect-h-9">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7763234727246!2d36.69972121475715!3d-1.3774712935833095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMjInMzguOSJTIDM2wrA0MicwNi45IkU!5e0!3m2!1sen!2sus!4v1625581339750!5m2!1sen!2sus" 
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d232.41230830651935!2d36.700051912669075!3d-1.3790878462997944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMcKwMjInNDQuOSJTIDM2wrA0MicwMS4wIkU!5e1!3m2!1sen!2ske!4v1733919991809!5m2!1sen!2ske" 
                 width="100%" 
                 height="450" 
                 style={{ border: 0 }} 

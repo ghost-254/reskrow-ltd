@@ -14,6 +14,7 @@ import { PopularProperties } from '@/components/PopularProperties';
 import ContactSection from '@/components/ContactSection';
 import Advertise from '@/components/Advertise';
 import ValueSection from '@/components/ValueSection';
+import { TestimonialsSection } from '@/components/TestimonialsSection';
 
 export default function Home() {
   const { ref, inView } = useInView({
@@ -120,6 +121,7 @@ export default function Home() {
       <Advertise />
       <ValueSection />
       <ContactSection />
+      <TestimonialsSection />
     </div>
   )
 }

@@ -151,49 +151,6 @@ export default function AboutPage() {
         </p>
       </section>
 
-      {/* Team Section */}
-      <section className="mb-20">
-        <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          {teamMembers.map((member, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-            >
-              <Card className="bg-primary/10 border-primary/20">
-                <CardHeader className="flex flex-col md:flex-row items-center gap-4">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    width={100}
-                    height={100}
-                    className="rounded-full border-4 border-primary/20"
-                  />
-                  <div>
-                    <CardTitle className="text-2xl font-bold">{member.name}</CardTitle>
-                    <Badge variant="outline" className="mt-2">
-                      {member.role}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="mb-4 text-foreground">{member.bio}</p>
-                  <div className="flex items-center">
-                    <Mail className="mr-2" />
-                    <a href={`mailto:${member.email}`} className="hover:underline">{member.email}</a>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-        <p className="text-center text-muted-foreground mt-8">
-          Our team is the heart of Reskrow. Each member brings unique skills and perspectives, united by a shared passion for revolutionizing the real estate industry. We're always looking for talented individuals to join our mission. If you're interested in being part of our journey, check out our careers page.
-        </p>
-      </section>
-
       {/* Additional Links Section */}
       <section className="mb-20">
         <div className="grid md:grid-cols-2 gap-8">
