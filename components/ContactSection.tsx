@@ -19,16 +19,16 @@ const ContactSection = () => {
   };
 
   const handleAdvertNow = () => {
-    window.open("https://reskrow.com/advertise", "_blank", "noopener,noreferrer");
+    window.open("mailto:adverts@reskrow.com", "_blank", "noopener,noreferrer");
   };
 
   return (
-    <section id="contact-us" className="py-16 bg-gray-100 dark:bg-[#141329]">
+    <section id="contact-us" className="py-16 bg-gray-100">
       <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between">
         {/* Left side */}
         <div className="lg:w-1/2 mb-8 lg:mb-0">
           <span className="text-orange-500 text-lg font-semibold">Our Contacts</span>
-          <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-4 dark:text-white">Easy to contact us</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-4">Easy to contact us</h2>
           <p className="text-gray-600 mb-8">
             We are always ready to help by providing the best services for you. We
             believe a good place to live or build a home can make your life better.
@@ -72,9 +72,9 @@ const ContactSection = () => {
             <Image
               src="/contact.jpg"
               alt="Contact Us"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-lg shadow-lg"
+              fill
+              className="object-cover rounded-lg"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         </div>
@@ -92,19 +92,19 @@ interface ContactModeProps {
 }
 
 const ContactMode: React.FC<ContactModeProps> = ({ icon, title, info, action, buttonText }) => (
-  <div className="bg-white dark:bg-[#050419] p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:scale-105">
+  <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:scale-105">
     <div className="flex items-center mb-4">
-      <div className="bg-blue-100 dark:bg-blue-950 p-2 rounded-full mr-4">
+      <div className="bg-blue-100 p-2 rounded-full mr-4">
         {icon}
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         <p className="text-gray-600">{info}</p>
       </div>
     </div>
     <Button
       onClick={action}
-      className="w-full bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-950 dark:text-white dark:hover:bg-[#222539] transition-colors duration-300"
+      className="w-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors duration-300"
     >
       {buttonText}
     </Button>

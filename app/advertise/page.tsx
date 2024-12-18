@@ -97,7 +97,7 @@ export default function AdvertisePage() {
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center text-primary">Advertise with Reskrow</h1>
           <p className="text-xl text-center text-muted-foreground max-w-2xl mx-auto">
-            Reach a targeted audience of real estate professionals and enthusiasts. Boost your brand visibility and drive quality leads to your business.
+          Lease our online space to reach a targeted audience of real estate professionals and enthusiasts. Boost your brand visibility and drive quality leads to your business. We will also publish your craft in all our trusted online vehicles.
           </p>
         </div>
       </section>

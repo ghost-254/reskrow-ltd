@@ -27,31 +27,39 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  // List of paths that require authentication
-  const protectedPaths = [
-    '/properties/create',
-    '/properties/edit',
-    '/buy',
-    '/sell',
-    '/rent',
-    '/profile',
-    '/saved-properties',
-    '/my-listings'
-  ]
+    // List of paths that require authentication
+    const protectedPaths = [
+      '/properties/create',
+      '/properties/edit',
+      '/buy',
+      '/sell',
+      '/rent',
+      '/profile',
+      '/saved-properties',
+      '/my-listings'
+    ]
 
-  const isProtectedPath = protectedPaths.some(path => 
-    request.nextUrl.pathname.startsWith(path)
-  )
+    const isProtectedPath = protectedPaths.some(path => 
+      request.nextUrl.pathname.startsWith(path)
+    )
 
-  if (isProtectedPath && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/auth'
-    url.searchParams.set('redirectTo', request.nextUrl.pathname)
-    return NextResponse.redirect(url)
+    if (isProtectedPath && !user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/auth'
+      url.searchParams.set('redirectTo', request.nextUrl.pathname)
+      return NextResponse.redirect(url)
+    }
+  } catch (error) {
+    console.error('Error in middleware:', error)
+    // Handle the error gracefully, perhaps by redirecting to anerror page or allowing the request to continue:
+    // return NextResponse.redirect(new URL('/error', request.url))
+    // Or, to allow the request to continue:
+    // return NextResponse.next()
   }
 
   return supabaseResponse

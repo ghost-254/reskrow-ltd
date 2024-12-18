@@ -41,6 +41,8 @@ export default function Footer() {
               <li><Link href="/rent" className={`hover: ${styles.fireLink}`}>Rent</Link></li>
               <li><Link href="/sell" className={`hover: ${styles.fireLink}`}>Sell</Link></li>
               <li><Link href="/escrow" className={`hover: ${styles.fireLink}`}>Escrow Services</Link></li>
+              <li><Link href="/pms" className={`hover: ${styles.fireLink}`}>Property Management Software (PMS)</Link></li>
+
             </ul>
           </div>
           <div>

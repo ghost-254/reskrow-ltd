@@ -90,8 +90,9 @@ export default function ContactPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Reskrow Building, Forest-Line Road,</p>
-            <p>Olkeri Primary School Ngong&apos;</p>
+            <p>Reskrow Suites,</p>
+            <p>Forest-Line Rd off Ushirika Rd,</p>
+            <p>Olkeri Primary School Ngong&apos; Town</p>
           </CardContent>
         </Card>
 
