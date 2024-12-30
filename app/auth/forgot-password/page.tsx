@@ -6,30 +6,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from '@/utils/supabase/client';
+import { auth } from '@/utils/firebase/config';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
   const { toast } = useToast()
-  const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
-    })
+    setLoading(true)
 
-    if (error) {
+    try {
+      await sendPasswordResetEmail(auth, email, {
+        url: `${window.location.origin}/auth/reset-password`, // Redirect URL after password reset
+      })
       toast({
-        title: "Error",
+        title: "Password Reset Email Sent",
+        description: "Check your inbox for instructions.",
+      })
+    } catch (error: any) {
+      toast({
+        title: "Error Sending Email",
         description: error.message,
         variant: "destructive",
       })
-    } else {
-      toast({
-        title: "Success",
-        description: "Password reset email sent. Check your inbox.",
-      })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -53,8 +58,8 @@ export default function ForgotPasswordPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
-              Send Reset Link
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <LoadingSpinner size={16} className="mr-2" /> : "Send Reset Link"}
             </Button>
           </form>
         </CardContent>

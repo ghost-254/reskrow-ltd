@@ -12,20 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
-import { createClient } from '@/utils/supabase/client'
-import { User } from '@supabase/supabase-js'
-import { useState } from 'react'
-import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { auth } from '@/utils/firebase/config'
+import { signOut } from 'firebase/auth'
+import { User } from 'firebase/auth'
 
 export function UserNav({ user }: { user: User }) {
   const router = useRouter()
-  const supabase = createClient()
-  const [loading, setLoading] = useState(false)
 
   const handleSignOut = async () => {
-    setLoading(true)
-    await supabase.auth.signOut()
-    setLoading(false)
+    await signOut(auth)
     router.refresh()
   }
 
@@ -34,7 +29,7 @@ export function UserNav({ user }: { user: User }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata.avatar_url} alt={user.email || "User avatar"} />
+            <AvatarImage src={user.photoURL || undefined} alt={user.email || "User avatar"} />
             <AvatarFallback>{user.email ? user.email[0].toUpperCase() : 'U'}</AvatarFallback>
           </Avatar>
         </Button>
@@ -42,7 +37,7 @@ export function UserNav({ user }: { user: User }) {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.email}</p>
+            <p className="text-sm font-medium leading-none">{user.displayName || user.email}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
@@ -62,7 +57,7 @@ export function UserNav({ user }: { user: User }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          {loading ? <LoadingSpinner /> : 'Log out'}
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

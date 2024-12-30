@@ -7,25 +7,25 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { SignUpForm } from "@/components/SignUpForm"
 import { SignInForm } from "@/components/SignInForm"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
-import { createClient } from '@/utils/supabase/client'
+import { auth } from '@/utils/firebase/config'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export function AuthForm() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClient()
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
         router.push('/')
       } else {
         setLoading(false)
       }
-    }
-    checkSession()
-  }, [supabase, router])
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   if (loading) {
     return (

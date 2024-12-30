@@ -8,53 +8,44 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useToast } from "@/hooks/use-toast"
-import { createClient } from '@/utils/supabase/client'
-import { User } from '@supabase/supabase-js'
-
-type Profile = {
-  id: string
-  username: string
-  full_name: string
-  avatar_url: string | null
-}
+import { auth, db } from '@/utils/firebase/config'
+import { updateProfile } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
+import { User } from 'firebase/auth'
 
 export type ProfileFormProps = {
   user: User
-  profile: Profile | null
 }
 
-export default function ProfileForm({ user, profile }: ProfileFormProps) {
-  const [username, setUsername] = useState(profile?.username || '')
-  const [fullName, setFullName] = useState(profile?.full_name || '')
-  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '')
+export default function ProfileForm({ user }: ProfileFormProps) {
+  const [displayName, setDisplayName] = useState(user.displayName || '')
+  const [photoURL, setPhotoURL] = useState(user.photoURL || '')
   const router = useRouter()
   const { toast } = useToast()
-  const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({ 
-        id: user.id, 
-        username, 
-        full_name: fullName,
-        avatar_url: avatarUrl,
-        updated_at: new Date().toISOString()
-      })
+    try {
+      await updateProfile(user, { displayName, photoURL })
+      await setDoc(doc(db, 'users', user.uid), {
+        displayName,
+        photoURL,
+        email: user.email,
+        updatedAt: new Date().toISOString()
+      }, { merge: true })
 
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive",
-      })
-    } else {
       toast({
         title: "Success",
         description: "Profile updated successfully",
       })
       router.refresh()
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+        variant: "destructive",
+      })
     }
   }
 
@@ -64,11 +55,11 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
         <CardHeader>
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={avatarUrl || undefined} alt={fullName || user.email || "User avatar"} />
-              <AvatarFallback>{fullName ? fullName[0].toUpperCase() : 'U'}</AvatarFallback>
+              <AvatarImage src={photoURL || undefined} alt={displayName || user.email || "User avatar"} />
+              <AvatarFallback>{displayName ? displayName[0].toUpperCase() : 'U'}</AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-2xl">{fullName || 'Welcome!'}</CardTitle>
+              <CardTitle className="text-2xl">{displayName || 'Welcome!'}</CardTitle>
               <CardDescription>{user.email}</CardDescription>
             </div>
           </div>
@@ -76,21 +67,12 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="displayName">Display Name</Label>
               <Input
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Your unique username"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Your full name"
+                id="displayName"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Your display name"
               />
             </div>
             <div className="space-y-2">
@@ -103,11 +85,11 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="avatarUrl">Avatar URL</Label>
+              <Label htmlFor="photoURL">Avatar URL</Label>
               <Input
-                id="avatarUrl"
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
+                id="photoURL"
+                value={photoURL}
+                onChange={(e) => setPhotoURL(e.target.value)}
                 placeholder="https://example.com/your-avatar.jpg"
               />
             </div>

@@ -1,9 +1,13 @@
+'use client'
+
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { UserNav } from './UserNav'
 import { ThemeSwitcher } from './ThemeSwitcher'
-import { createClient } from '@/utils/supabase/server'
+import { auth } from '@/utils/firebase/config'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { ChevronDown } from 'lucide-react'
 import {
   DropdownMenu,
@@ -13,15 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MobileMenu } from './MobileMenu';
 
-export default async function Header() {
-  const supabase = await createClient()
-  
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export default function Header() {
+  const [user, loading] = useAuthState(auth);
 
   return (
-    <header className="bg-background border-b">
+    <header className="bg-background border-b relative z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -66,7 +66,7 @@ export default async function Header() {
             <Link href="/contact" className="text-foreground hover:text-primary">Contact Us</Link>
           </nav>
           <div className="flex items-center space-x-4">
-            {user ? (
+            {!loading && (user ? (
               <>
                 <Button asChild variant="ghost">
                   <Link href="/properties/create">List Property</Link>
@@ -77,7 +77,7 @@ export default async function Header() {
               <Button asChild variant="outline">
                 <Link href="/auth">Sign Up / Sign In</Link>
               </Button>
-            )}
+            ))}
             <ThemeSwitcher />
             <MobileMenu />
           </div>

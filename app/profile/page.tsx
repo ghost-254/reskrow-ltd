@@ -1,29 +1,29 @@
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
-import ProfileForm, { ProfileFormProps } from '@/components/ProfileForm'
+'use client'
 
-export default async function ProfilePage() {
-  const supabase = await createClient()
-  
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import ProfileForm from '@/components/ProfileForm'
+import { useFirebase } from '@/app/firebase-provider'
+import { LoadingSpinner } from "@/components/LoadingSpinner"
+
+export default function ProfilePage() {
+  const { user, loading } = useFirebase()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth')
+    }
+  }, [user, loading, router])
+
+  if (loading) {
+    return <LoadingSpinner size={48} />
+  }
 
   if (!user) {
-    redirect('/auth')
+    return null
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-
-  const profileFormProps: ProfileFormProps = {
-    user,
-    profile,
-  }
-
-  return <ProfileForm {...profileFormProps} />
+  return <ProfileForm user={user} />
 }
 

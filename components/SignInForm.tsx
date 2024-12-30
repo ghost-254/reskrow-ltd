@@ -1,14 +1,16 @@
 "use client"
 
-import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
-import { LoadingSpinner } from "@/components/LoadingSpinner"
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/supabase/client'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/utils/firebase/config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { setSessionCookie } from '@/utils/firebase/auth';
 
 export function SignInForm() {
   const [email, setEmail] = useState("")
@@ -16,39 +18,24 @@ export function SignInForm() {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
-  const supabase = createClient()
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) {
-        toast({
-          title: "Sign In Failed",
-          description: error.message,
-          variant: "destructive",
-        })
-      } else {
-        toast({
-          title: "Sign In Successful",
-          description: "Welcome back!",
-        })
-        // Refresh the page with a loading effect
-        router.refresh()
-        setLoading(true) // Keep loading state true for the refresh
-        router.push('/')
-        window.location.reload()
-      }
-    } catch (error) {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const idToken = await userCredential.user.getIdToken()
+      await setSessionCookie(idToken)
       toast({
-        title: "Network Error",
-        description: "Unable to connect. Please check your internet connection.",
+        title: "Sign In Successful",
+        description: "Welcome back!",
+      })
+      router.push('/')
+    } catch (error: any) {
+      toast({
+        title: "Sign In Failed",
+        description: error.message,
         variant: "destructive",
       })
     } finally {
