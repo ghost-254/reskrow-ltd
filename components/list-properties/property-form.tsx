@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
-import { Stepper } from "../ui/Stepper";
+import { Stepper } from "../ui/stepper";
 import Image from "next/image";
 import { Upload, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { propertyTypes } from "@/constants/constants";
