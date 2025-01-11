@@ -1,41 +1,70 @@
+import { NextRequest, NextResponse } from "next/server";
+import { adminAuth } from "./utils/firebase/admin";
 
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+const protectedRoutes = [
+  "/properties",
+  "/properties/create",
+  "/properties/edit",
+  "/buy",
+  "/sell",
+  "/rent",
+  "/profile",
+  "/saved-properties",
+  "/my-listings",
+  "/settings",
+];
 
-export async function middleware(request: NextRequest) {
-  const protectedPaths = [
-    '/properties/create',
-    '/properties/edit',
-    '/buy',
-    '/sell',
-    '/rent',
-    '/profile',
-    '/saved-properties',
-    '/my-listings',
-  ];
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  const isProtectedPath = protectedPaths.some(path => 
-    request.nextUrl.pathname.startsWith(path)
-  );
+  if (req.nextUrl.pathname === "/logout") {
+    const response = NextResponse.redirect(new URL("/", req.url));
+    response.cookies.delete("session");
 
-  if (!isProtectedPath) {
-    return NextResponse.next();
+    console.log("Response cookies:", response.cookies.getAll());
+
+    return response;
   }
 
-  const sessionCheck = await fetch(`${request.nextUrl.origin}/api/validate-session`, {
-    headers: { cookie: request.headers.get('cookie') || '' },
-  });
+  // Check if the route is protected
+  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+    const token = req.cookies.get("session")?.value;
 
-  if (sessionCheck.status !== 200) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/auth';
-    url.searchParams.set('redirectTo', request.nextUrl.pathname);
-    return NextResponse.redirect(url);
+    if (!token) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/auth";
+      url.searchParams.set("redirectTo", req.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
+
+    try {
+      // Call the validation API to verify the token
+      const response = await fetch(
+        `${req.nextUrl.origin}/api/validate-session`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!result.valid) {
+        throw new Error(result.error || "Invalid token");
+      }
+
+      console.error("Token is Valid");
+
+      // If valid, proceed to the requested route
+      return NextResponse.next();
+    } catch (error) {
+      console.error("Token validation failed:", error);
+      const loginUrl = new URL("/auth", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
+  // Allow access to unprotected routes
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-};
