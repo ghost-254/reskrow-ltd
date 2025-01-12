@@ -25,14 +25,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useFirebase } from "@/app/firebase-provider";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../LoadingSpinner";
-
-interface LeafletMapProps {
-  center: [number, number];
-  zoom: number;
-  onMapClick: (coordinates: [number, number]) => void;
-  onAddressChange?: (address: string) => void;
-  markerPosition?: [number, number] | null;
-}
+import { LeafletMapProps } from "@/components/LeafletMap";
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
   ssr: false,
@@ -314,7 +307,11 @@ export default function PropertyForm() {
     if (validateStep(currentStep)) {
       setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
     } else {
-      alert("Please fill in all required fields before proceeding.");
+      toast({
+        title: "Error Listing Property",
+        description: "Please fill in all required fields before proceeding.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -553,6 +550,8 @@ export default function PropertyForm() {
                   onMapClick={handleMapClick}
                   markerPosition={markerPosition}
                   onAddressChange={handleAddressChange}
+                  showSearch={true}
+                  addressInput={null}
                 />
               </div>
             </div>

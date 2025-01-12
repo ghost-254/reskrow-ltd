@@ -13,6 +13,8 @@ import {
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebase/config";
 import { PropertyCard } from "@/components/PropertyCard";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Link } from "lucide-react";
 
 interface Property {
   id: string;
@@ -25,29 +27,61 @@ interface Property {
   area: number;
 }
 
+interface Land {
+  id: string;
+  name: string;
+  images: string[];
+  description: string;
+  price: string;
+  size: string;
+  type: string;
+  address: string;
+  availability: string;
+}
+
 export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [lands, setLands] = useState<Land[]>([]);
+  const [loadingProperties, setLoadingProperties] = useState(true);
+  const [loadingLands, setLoadingLands] = useState(true);
 
   useEffect(() => {
     const fetchProperties = async () => {
-      setLoading(true);
+      setLoadingProperties(true);
       try {
         const collectionRef = collection(db, "properties");
         const snapshot = await getDocs(collectionRef);
         const propertiesData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as Property[]; // Cast the mapped data to Property[]
+        })) as Property[];
         setProperties(propertiesData);
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
-        setLoading(false);
+        setLoadingProperties(false);
+      }
+    };
+
+    const fetchLands = async () => {
+      setLoadingLands(true);
+      try {
+        const collectionRef = collection(db, "lands");
+        const snapshot = await getDocs(collectionRef);
+        const landsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Land[];
+        setLands(landsData);
+      } catch (error) {
+        console.error("Error fetching lands:", error);
+      } finally {
+        setLoadingLands(false);
       }
     };
 
     fetchProperties();
+    fetchLands();
   }, []);
 
   return (
@@ -89,29 +123,44 @@ export default function PropertiesPage() {
           <Button className="w-full">Search</Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {loading ? (
-          <p>Loading properties...</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        {loadingProperties ? (
+          <LoadingSpinner size={48} />
         ) : properties.length === 0 ? (
           <p>No properties found.</p>
         ) : (
           properties.map((property) => (
             <PropertyCard
+              link={`/properties/${property.id}`}
               key={property.id}
+              id={property.id}
               image={property.images[0]}
               price={property.price}
               title={property.title}
               description={property.description}
             />
-            // <div key={property.id} className="bg-muted p-6 rounded-lg">
-            //   <h2 className="text-xl font-semibold mb-2">{property.title}</h2>
-            //   <p className="text-gray-600 mb-4">
-            //     {property.bedrooms} bed, {property.bathrooms} bath |{" "}
-            //     {property.area} sqft
-            //   </p>
-            //   <p className="text-lg font-bold mb-4">${property.price}</p>
-            //   <Button>View Details</Button>
-            // </div>
+          ))
+        )}
+      </div>
+
+      <h1 className="text-3xl font-bold mb-8">Lands</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {loadingLands ? (
+          <LoadingSpinner size={48} />
+        ) : lands.length === 0 ? (
+          <p>No lands found.</p>
+        ) : (
+          lands.map((land) => (
+            <PropertyCard
+              link={`/lands/${land.id}`}
+              key={land.id}
+              id={land.id}
+              image={land.images[0]}
+              price={Number(land.price)}
+              title={land.name}
+              description={land.description}
+            />
           ))
         )}
       </div>

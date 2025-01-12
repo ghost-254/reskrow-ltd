@@ -9,13 +9,14 @@ import {
 import "leaflet/dist/leaflet.css";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 
-interface LeafletMapProps {
+export interface LeafletMapProps {
   center: [number, number];
   zoom: number;
-  onMapClick: (coordinates: [number, number]) => void;
+  showSearch: boolean | true;
+  onMapClick?: (coordinates: [number, number]) => void | null;
   markerPosition?: [number, number] | null;
-  addressInput: React.ReactElement;
-  onAddressChange: (newAddress: string) => void;
+  addressInput: React.ReactElement | null;
+  onAddressChange?: (newAddress: string) => void;
 }
 
 interface SearchResult {
@@ -28,6 +29,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
   center,
   zoom,
   onMapClick,
+  showSearch,
   markerPosition,
   addressInput,
   onAddressChange,
@@ -55,9 +57,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
     const newCenter: [number, number] = [result.y, result.x];
     setMapCenter(newCenter);
     setMapZoom(15);
-    onMapClick(newCenter);
+    onMapClick!(newCenter);
     setSearchText(result.label);
-    onAddressChange(result.label);
+    onAddressChange!(result.label);
     setSearchResults([]);
     if (mapRef.current) {
       mapRef.current.flyTo(newCenter, 15);
@@ -67,7 +69,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
   const MapClickHandler: React.FC = () => {
     useMapEvents({
       click: (e) => {
-        onMapClick([e.latlng.lat, e.latlng.lng]);
+        onMapClick!([e.latlng.lat, e.latlng.lng]);
       },
     });
     return null;
@@ -75,36 +77,43 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
 
   return (
     <div>
-      <div
-        style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
-      >
-        <input
-          type="text"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Search location"
+      {showSearch ? (
+        <div
           style={{
-            padding: "8px",
-            marginRight: "5px",
-            width: "70%",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
-        />
-        <button
-          onClick={handleSearch}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "10px",
           }}
         >
-          Search
-        </button>
-      </div>
+          <input
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search location"
+            style={{
+              padding: "8px",
+              marginRight: "5px",
+              width: "70%",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
+          />
+          <button
+            onClick={handleSearch}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Search
+          </button>
+        </div>
+      ) : null}
+
       <div>
         {searchResults.map((result) => (
           <div

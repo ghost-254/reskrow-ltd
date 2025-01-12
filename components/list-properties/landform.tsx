@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +12,13 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import { Upload, X } from "lucide-react";
+import { db, storage } from "@/utils/firebase/config";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore"; // Removed serverTimestamp import since it wasn't used
+import { useToast } from "@/hooks/use-toast";
+import { useFirebase } from "@/app/firebase-provider";
+import dynamic from "next/dynamic";
+import { LeafletMapProps } from "@/components/LeafletMap";
 
 const landTypes = [
   "Agricultural",
@@ -26,6 +31,12 @@ const landTypes = [
   "Other",
 ];
 
+const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
+  ssr: false,
+}) as React.FC<LeafletMapProps>;
+
+const listingTypes = ["Sale", "Lease"];
+
 export default function LandForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -34,17 +45,28 @@ export default function LandForm() {
     address: "",
     price: "",
     size: "",
-    zoning: "",
+    availability: "",
+    location: {
+      lat: 0,
+      lng: 0,
+    },
   });
+
+  const { user, loading } = useFirebase();
+  const { toast } = useToast();
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
+    null
+  );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleAvailabilityChange = (availability: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      availability: availability,
+    }));
   };
 
   const handleSelectChange = (value: string) => {
@@ -72,24 +94,121 @@ export default function LandForm() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would call your function to upload the land
-    console.log("Uploading land:", { ...formData, images });
-    // Reset form after submission
-    setFormData({
-      name: "",
-      description: "",
-      type: "",
-      address: "",
-      price: "",
-      size: "",
-      zoning: "",
-    });
-    setImages([]);
-    setImagePreviews([]);
+  const uploadImagesToStorage = async (): Promise<string[]> => {
+    const uploadedImageUrls: string[] = [];
+    for (const image of images) {
+      const storageRef = ref(
+        storage,
+        `land-images/${image.name}-${Date.now()}`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, image);
+
+      await new Promise<void>((resolve, reject) => {
+        uploadTask.on("state_changed", null, reject, async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          uploadedImageUrls.push(downloadURL);
+          resolve();
+        });
+      });
+    }
+    return uploadedImageUrls;
   };
 
+  const saveLandToFirestore = async (imageUrls: string[]) => {
+    const landData = { ...formData, images: imageUrls };
+    const landCollection = collection(db, "lands");
+    await addDoc(landCollection, landData);
+  };
+
+  const validateForm = () => {
+    if (!formData.name) return "Land Name is required.";
+    if (!formData.type) return "Land Type is required.";
+    if (!formData.description) return "Description is required.";
+    if (!formData.address) return "Address is required.";
+    if (!formData.price || isNaN(Number(formData.price)))
+      return "Price must be a valid number.";
+    if (!formData.size || isNaN(Number(formData.size)))
+      return "Size must be a valid number.";
+
+    if (images.length === 0) return "At least one image is required.";
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errorMessage = validateForm();
+    if (errorMessage) {
+      toast({ title: "Validation Error", description: errorMessage });
+      return;
+    }
+    setIsUploading(true);
+
+    try {
+      const uploadedImages = await uploadImagesToStorage();
+
+      await saveLandToFirestore(uploadedImages);
+
+      toast({
+        title: "Success",
+        description: "Land uploaded successfully!",
+      });
+
+      // Reset form after successful submission
+      setFormData({
+        availability: "",
+        name: "",
+        description: "",
+        type: "",
+        address: "",
+        price: "",
+        size: "",
+        location: {
+          lat: 0,
+          lng: 0,
+        },
+      });
+      setImages([]);
+      setImagePreviews([]);
+    } catch (error) {
+      console.error("Error uploading land:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload land. Please try again.",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleMapClick = (coordinates: [number, number]) => {
+    setMarkerPosition(coordinates);
+    setFormData((prev) => ({
+      ...prev,
+
+      location: {
+        lat: coordinates[0],
+        lng: coordinates[1],
+      },
+    }));
+  };
+
+  const handleAddressChange = (newAddress: string) => {
+    updateAddress(newAddress);
+  };
+
+  const updateAddress = (newAddress: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: newAddress,
+    }));
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,6 +223,25 @@ export default function LandForm() {
             className="mt-1"
           />
         </div>
+        <div>
+          <Label htmlFor="listingType">Listing Type</Label>
+          <Select
+            value={formData.availability}
+            onValueChange={(value) => handleAvailabilityChange(value)}
+          >
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select a listing type" />
+            </SelectTrigger>
+            <SelectContent>
+              {listingTypes.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div>
           <Label htmlFor="type">Land Type</Label>
           <Select
@@ -146,6 +284,19 @@ export default function LandForm() {
             className="mt-1"
           />
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="location">Location</Label>
+          <LeafletMap
+            center={markerPosition || [-1.286389, 36.817223]}
+            zoom={13}
+            onMapClick={handleMapClick}
+            markerPosition={markerPosition}
+            onAddressChange={handleAddressChange}
+            showSearch={true}
+            addressInput={null}
+          />
+        </div>
         <div>
           <Label htmlFor="price">Price</Label>
           <Input
@@ -171,11 +322,11 @@ export default function LandForm() {
           />
         </div>
         <div>
-          <Label htmlFor="zoning">Zoning</Label>
+          <Label htmlFor="address">Adress</Label>
           <Input
-            id="zoning"
-            name="zoning"
-            value={formData.zoning}
+            id="address"
+            name="address"
+            value={formData.address}
             onChange={handleInputChange}
             required
             className="mt-1"
@@ -185,7 +336,7 @@ export default function LandForm() {
       <div>
         <Label htmlFor="images">Land Images</Label>
         <div
-          className="mt-1 border-2 border-dashed border-gray-300 rounded-lg p-6 transition-colors duration-200 ease-in-out hover:border-primary cursor-pointer"
+          className="mt-1 border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         >
           <Input
@@ -229,8 +380,8 @@ export default function LandForm() {
           ))}
         </div>
       )}
-      <Button type="submit" className="w-full">
-        Upload Land
+      <Button type="submit" className="w-full" disabled={isUploading}>
+        {isUploading ? "Uploading..." : "Upload Land"}
       </Button>
     </form>
   );
