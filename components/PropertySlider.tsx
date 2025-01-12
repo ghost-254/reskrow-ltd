@@ -1,38 +1,43 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation } from 'swiper/modules'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { PropertyCard } from './PropertyCard'
-import { PuffLoader } from 'react-spinners'
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PropertyCard } from "./PropertyCard";
+import { PuffLoader } from "react-spinners";
 
 // Import Swiper styles
-import 'swiper/css'
-import 'swiper/css/navigation'
+import "swiper/css";
+import "swiper/css/navigation";
 
 interface Property {
-  id: string
-  image: string
-  price: number
-  title: string
-  description: string
+  id: string;
+  image: string;
+  price: number;
+  title: string;
+  description: string;
 }
 
 interface PropertySliderProps {
-  title: string
-  properties: Property[]
-  isLoading?: boolean
-  isError?: boolean
+  title: string;
+  properties: Property[];
+  isLoading?: boolean;
+  isError?: boolean;
 }
 
-export function PropertySlider({ title, properties, isLoading = false, isError = false }: PropertySliderProps) {
+export function PropertySlider({
+  title,
+  properties,
+  isLoading = false,
+  isError = false,
+}: PropertySliderProps) {
   if (isError) {
     return (
       <div className="wrapper">
         <span>Error while fetching data</span>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -40,7 +45,7 @@ export function PropertySlider({ title, properties, isLoading = false, isError =
       <div className="flex items-center justify-center h-60vh">
         <PuffLoader color="#4066ff" size={80} />
       </div>
-    )
+    );
   }
 
   return (
@@ -55,8 +60,8 @@ export function PropertySlider({ title, properties, isLoading = false, isError =
           spaceBetween={20}
           slidesPerView={1}
           navigation={{
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
           }}
           breakpoints={{
             640: {
@@ -78,6 +83,8 @@ export function PropertySlider({ title, properties, isLoading = false, isError =
                 price={property.price}
                 title={property.title}
                 description={property.description}
+                id={""}
+                link={""}
               />
             </SwiperSlide>
           ))}
@@ -90,6 +97,5 @@ export function PropertySlider({ title, properties, isLoading = false, isError =
         </Swiper>
       </div>
     </div>
-  )
+  );
 }
-
