@@ -1,3 +1,5 @@
+//app/api/validate-session/route.ts
+
 import { adminAuth } from "@/utils/firebase/admin";
 import { NextResponse } from "next/server";
 

@@ -1,24 +1,23 @@
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Image from "next/image";
-import { Upload, X } from "lucide-react";
-import { db, storage } from "@/utils/firebase/config";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore"; // Removed serverTimestamp import since it wasn't used
-import { useToast } from "@/hooks/use-toast";
-import { useFirebase } from "@/app/firebase-provider";
-import dynamic from "next/dynamic";
-import { LeafletMapProps } from "@/components/LeafletMap";
+//components/list-properties/landform.tsx
+
+"use client"
+
+import type React from "react"
+import { useState, useRef } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Image from "next/image"
+import { Upload, X } from "lucide-react"
+import { db, storage } from "@/utils/firebase/config"
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { addDoc, collection } from "firebase/firestore" // Removed serverTimestamp import since it wasn't used
+import { useToast } from "@/hooks/use-toast"
+import { useFirebase } from "@/app/firebase-provider"
+import dynamic from "next/dynamic"
+import type { LeafletMapProps } from "@/components/LeafletMap"
 
 const landTypes = [
   "Agricultural",
@@ -29,13 +28,13 @@ const landTypes = [
   "Conservation",
   "Mixed-use",
   "Other",
-];
+]
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
   ssr: false,
-}) as React.FC<LeafletMapProps>;
+}) as React.FC<LeafletMapProps>
 
-const listingTypes = ["Sale", "Lease"];
+const listingTypes = ["Sale", "Lease"]
 
 export default function LandForm() {
   const [formData, setFormData] = useState({
@@ -50,108 +49,101 @@ export default function LandForm() {
       lat: 0,
       lng: 0,
     },
-  });
+  })
 
-  const { user, loading } = useFirebase();
-  const { toast } = useToast();
-  const [images, setImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
-    null
-  );
+  const { user, loading } = useFirebase()
+  const { toast } = useToast()
+  const [images, setImages] = useState<File[]>([])
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null)
 
   const handleAvailabilityChange = (availability: string) => {
     setFormData((prev) => ({
       ...prev,
       availability: availability,
-    }));
-  };
+    }))
+  }
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, type: value }));
-  };
+    setFormData((prev) => ({ ...prev, type: value }))
+  }
 
   const handleImageUpload = (files: File[]) => {
-    const newImages = [...images, ...files];
-    setImages(newImages);
+    const newImages = [...images, ...files]
+    setImages(newImages)
 
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prev) => [...prev, ...newPreviews]);
-  };
+    const newPreviews = files.map((file) => URL.createObjectURL(file))
+    setImagePreviews((prev) => [...prev, ...newPreviews])
+  }
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    handleImageUpload(files);
-  };
+    const files = Array.from(e.target.files || [])
+    handleImageUpload(files)
+  }
 
   const removeImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index))
     setImagePreviews((prevPreviews) => {
-      URL.revokeObjectURL(prevPreviews[index]);
-      return prevPreviews.filter((_, i) => i !== index);
-    });
-  };
+      URL.revokeObjectURL(prevPreviews[index])
+      return prevPreviews.filter((_, i) => i !== index)
+    })
+  }
 
   const uploadImagesToStorage = async (): Promise<string[]> => {
-    const uploadedImageUrls: string[] = [];
+    const uploadedImageUrls: string[] = []
     for (const image of images) {
-      const storageRef = ref(
-        storage,
-        `land-images/${image.name}-${Date.now()}`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, image);
+      const storageRef = ref(storage, `land-images/${image.name}-${Date.now()}`)
+      const uploadTask = uploadBytesResumable(storageRef, image)
 
       await new Promise<void>((resolve, reject) => {
         uploadTask.on("state_changed", null, reject, async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          uploadedImageUrls.push(downloadURL);
-          resolve();
-        });
-      });
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+          uploadedImageUrls.push(downloadURL)
+          resolve()
+        })
+      })
     }
-    return uploadedImageUrls;
-  };
+    return uploadedImageUrls
+  }
 
   const saveLandToFirestore = async (imageUrls: string[]) => {
-    const landData = { ...formData, images: imageUrls };
-    const landCollection = collection(db, "lands");
-    await addDoc(landCollection, landData);
-  };
+    const landData = { ...formData, images: imageUrls }
+    const landCollection = collection(db, "lands")
+    await addDoc(landCollection, landData)
+  }
 
   const validateForm = () => {
-    if (!formData.name) return "Land Name is required.";
-    if (!formData.type) return "Land Type is required.";
-    if (!formData.description) return "Description is required.";
-    if (!formData.address) return "Address is required.";
-    if (!formData.price || isNaN(Number(formData.price)))
-      return "Price must be a valid number.";
-    if (!formData.size || isNaN(Number(formData.size)))
-      return "Size must be a valid number.";
+    if (!formData.name) return "Land Name is required."
+    if (!formData.type) return "Land Type is required."
+    if (!formData.description) return "Description is required."
+    if (!formData.address) return "Address is required."
+    if (!formData.price || isNaN(Number(formData.price))) return "Price must be a valid number."
+    if (!formData.size || isNaN(Number(formData.size))) return "Size must be a valid number."
 
-    if (images.length === 0) return "At least one image is required.";
-    return null;
-  };
+    if (images.length === 0) return "At least one image is required."
+    return null
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const errorMessage = validateForm();
+    e.preventDefault()
+    const errorMessage = validateForm()
     if (errorMessage) {
-      toast({ title: "Validation Error", description: errorMessage });
-      return;
+      toast({ title: "Validation Error", description: errorMessage })
+      return
     }
-    setIsUploading(true);
+    setIsUploading(true)
 
     try {
-      const uploadedImages = await uploadImagesToStorage();
+      const uploadedImages = await uploadImagesToStorage()
 
-      await saveLandToFirestore(uploadedImages);
+      await saveLandToFirestore(uploadedImages)
 
       toast({
         title: "Success",
         description: "Land uploaded successfully!",
-      });
+      })
 
       // Reset form after successful submission
       setFormData({
@@ -166,22 +158,22 @@ export default function LandForm() {
           lat: 0,
           lng: 0,
         },
-      });
-      setImages([]);
-      setImagePreviews([]);
+      })
+      setImages([])
+      setImagePreviews([])
     } catch (error) {
-      console.error("Error uploading land:", error);
+      console.error("Error uploading land:", error)
       toast({
         title: "Error",
         description: "Failed to upload land. Please try again.",
-      });
+      })
     } finally {
-      setIsUploading(false);
+      setIsUploading(false)
     }
-  };
+  }
 
   const handleMapClick = (coordinates: [number, number]) => {
-    setMarkerPosition(coordinates);
+    setMarkerPosition(coordinates)
     setFormData((prev) => ({
       ...prev,
 
@@ -189,46 +181,34 @@ export default function LandForm() {
         lat: coordinates[0],
         lng: coordinates[1],
       },
-    }));
-  };
+    }))
+  }
 
   const handleAddressChange = (newAddress: string) => {
-    updateAddress(newAddress);
-  };
+    updateAddress(newAddress)
+  }
 
   const updateAddress = (newAddress: string) => {
     setFormData((prev) => ({
       ...prev,
       address: newAddress,
-    }));
-  };
+    }))
+  }
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="name">Land Name</Label>
-          <Input
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-            className="mt-1"
-          />
+          <Input id="name" name="name" value={formData.name} onChange={handleInputChange} required className="mt-1" />
         </div>
         <div>
           <Label htmlFor="listingType">Listing Type</Label>
-          <Select
-            value={formData.availability}
-            onValueChange={(value) => handleAvailabilityChange(value)}
-          >
+          <Select value={formData.availability} onValueChange={(value) => handleAvailabilityChange(value)}>
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select a listing type" />
             </SelectTrigger>
@@ -244,12 +224,7 @@ export default function LandForm() {
 
         <div>
           <Label htmlFor="type">Land Type</Label>
-          <Select
-            name="type"
-            value={formData.type}
-            onValueChange={handleSelectChange}
-            required
-          >
+          <Select name="type" value={formData.type} onValueChange={handleSelectChange} required>
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select a land type" />
             </SelectTrigger>
@@ -350,9 +325,7 @@ export default function LandForm() {
           />
           <div className="text-center">
             <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-600">
-              Click to upload or drag and drop images here
-            </p>
+            <p className="mt-2 text-sm text-gray-600">Click to upload or drag and drop images here</p>
           </div>
         </div>
       </div>
@@ -384,5 +357,5 @@ export default function LandForm() {
         {isUploading ? "Uploading..." : "Upload Land"}
       </Button>
     </form>
-  );
+  )
 }

@@ -1,11 +1,10 @@
-import PropertyDetails from "@/components/property-details/property-details";
-import { use } from "react";
+"use client"
+import { useParams } from "next/navigation"
+import PropertyDetails from "@/components/property-details"
 
-export default function PropertyPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const resolvedParams = use(params);
-  return <PropertyDetails id={resolvedParams.id} />;
+export default function PropertyDetailPage() {
+  const params = useParams()
+  const id = params.id as string
+
+  return <PropertyDetails id={id} />
 }
