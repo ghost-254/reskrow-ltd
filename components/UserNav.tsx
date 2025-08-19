@@ -55,10 +55,10 @@ export function UserNav({ user }: { user: User }) {
           <DropdownMenuItem onClick={() => router.push("/profile")}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/saved-properties")}>
+          <DropdownMenuItem onClick={() => router.push("/profile/saved-properties")}>
             Saved Properties
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/my-listings")}>
+          <DropdownMenuItem onClick={() => router.push("/profile/my-listings")}>
             My Listings
           </DropdownMenuItem>
         </DropdownMenuGroup>

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/utils/firebase/config"
 import { useCurrency } from "@/hooks/useCurrency"
+import { useFavorites } from "@/hooks/useFavorites"
+import { ShareModal } from "@/components/ShareModal"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -88,8 +90,9 @@ export default function PropertyDetails({ id }: { id: string }) {
   const [property, setProperty] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [isLiked, setIsLiked] = useState(false)
-  const { convertAndFormat, currency } = useCurrency()
+  const { convertAndFormat } = useCurrency()
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites()
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -109,6 +112,21 @@ export default function PropertyDetails({ id }: { id: string }) {
       fetchProperty()
     }
   }, [id])
+
+  const handleFavoriteToggle = async () => {
+    if (!property) return
+
+    if (isFavorite(property.id)) {
+      await removeFromFavorites(property.id)
+    } else {
+      await addToFavorites(property.id, "property", {
+        title: property.title,
+        price: property.price,
+        image: property.images?.[0] || "",
+        address: property.address,
+      })
+    }
+  }
 
   const nextImage = () => {
     if (property?.images) {
@@ -219,13 +237,18 @@ export default function PropertyDetails({ id }: { id: string }) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsLiked(!isLiked)}
-                className={isLiked ? "text-red-500 border-red-500" : ""}
+                onClick={handleFavoriteToggle}
+                className={isFavorite(property.id) ? "text-red-500 border-red-500" : ""}
               >
-                <Heart className={`h-4 w-4 mr-1 ${isLiked ? "fill-current" : ""}`} />
-                Favorite
+                <Heart className={`h-4 w-4 mr-1 ${isFavorite(property.id) ? "fill-current" : ""}`} />
+                {isFavorite(property.id) ? "Saved" : "Save"}
               </Button>
-              <Button variant="outline" size="sm" className="bg-teal-600 text-white border-teal-600 hover:bg-teal-700">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-teal-600 text-white border-teal-600 hover:bg-teal-700"
+                onClick={() => setShareModalOpen(true)}
+              >
                 <Share2 className="h-4 w-4 mr-1" />
                 Share
               </Button>
@@ -244,7 +267,8 @@ export default function PropertyDetails({ id }: { id: string }) {
                     <Image
                       src={
                         property.images[selectedImageIndex] ||
-                        "/placeholder.svg?height=500&width=800&query=property interior"
+                        "/placeholder.svg?height=500&width=800&query=property interior" ||
+                        "/placeholder.svg"
                       }
                       alt={`${property.title} - Image ${selectedImageIndex + 1}`}
                       fill
@@ -614,6 +638,16 @@ export default function PropertyDetails({ id }: { id: string }) {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        propertyTitle={property.title}
+        propertyUrl={`/properties/${property.id}`}
+        propertyImage={property.images?.[0]}
+        propertyPrice={convertAndFormat(property.price)}
+      />
     </div>
   )
 }

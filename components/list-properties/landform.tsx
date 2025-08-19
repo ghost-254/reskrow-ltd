@@ -1,4 +1,4 @@
-//components/list-properties/landform.tsx
+//components/list-properties/land-form.tsx
 
 "use client"
 
@@ -18,6 +18,8 @@ import { useToast } from "@/hooks/use-toast"
 import { useFirebase } from "@/app/firebase-provider"
 import dynamic from "next/dynamic"
 import type { LeafletMapProps } from "@/components/LeafletMap"
+import ProfileSetup from "@/components/ProfileSetup"
+import { useUserProfile } from "@/hooks/useUserProfile"
 
 const landTypes = [
   "Agricultural",
@@ -58,6 +60,7 @@ export default function LandForm() {
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null)
+  const { profile, loading: profileLoading } = useUserProfile()
 
   const handleAvailabilityChange = (availability: string) => {
     setFormData((prev) => ({
@@ -109,7 +112,15 @@ export default function LandForm() {
   }
 
   const saveLandToFirestore = async (imageUrls: string[]) => {
-    const landData = { ...formData, images: imageUrls }
+    const landData = {
+      ...formData,
+      images: imageUrls,
+      agentId: user?.uid,
+      agentName: profile?.agentName,
+      agentPhone: profile?.agentPhone,
+      agentEmail: profile?.agentEmail,
+      createdAt: new Date(),
+    }
     const landCollection = collection(db, "lands")
     await addDoc(landCollection, landData)
   }
@@ -128,11 +139,22 @@ export default function LandForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!profile) {
+      toast({
+        title: "Profile Required",
+        description: "Please complete your agent profile before listing land.",
+        variant: "destructive",
+      })
+      return
+    }
+
     const errorMessage = validateForm()
     if (errorMessage) {
       toast({ title: "Validation Error", description: errorMessage })
       return
     }
+
     setIsUploading(true)
 
     try {
@@ -176,7 +198,6 @@ export default function LandForm() {
     setMarkerPosition(coordinates)
     setFormData((prev) => ({
       ...prev,
-
       location: {
         lat: coordinates[0],
         lng: coordinates[1],
@@ -199,6 +220,21 @@ export default function LandForm() {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
+
+  if (!profileLoading && !profile) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12">
+        <div className="max-w-2xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Profile</h1>
+            <p className="text-gray-600">You need to set up your agent profile before listing land</p>
+          </div>
+          <ProfileSetup onComplete={() => window.location.reload()} />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -296,17 +332,6 @@ export default function LandForm() {
             className="mt-1"
           />
         </div>
-        <div>
-          <Label htmlFor="address">Adress</Label>
-          <Input
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={handleInputChange}
-            required
-            className="mt-1"
-          />
-        </div>
       </div>
       <div>
         <Label htmlFor="images">Land Images</Label>
@@ -334,7 +359,7 @@ export default function LandForm() {
           {imagePreviews.map((preview, index) => (
             <div key={index} className="relative group">
               <Image
-                src={preview}
+                src={preview || "/placeholder.svg"}
                 alt={`Land image ${index + 1}`}
                 width={200}
                 height={200}

@@ -1,11 +1,11 @@
-//components/land-details/land-details.tsx
-
 "use client"
 
 import { useState, useEffect } from "react"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/utils/firebase/config"
 import { useCurrency } from "@/hooks/useCurrency"
+import { useFavorites } from "@/hooks/useFavorites"
+import { ShareModal } from "@/components/ShareModal"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -78,8 +78,9 @@ export default function LandDetails({ id }: { id: string }) {
   const [land, setLand] = useState<Land | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [isLiked, setIsLiked] = useState(false)
-  const { convertAndFormat, currency } = useCurrency()
+  const { convertAndFormat } = useCurrency()
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites()
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchLand = async () => {
@@ -99,6 +100,21 @@ export default function LandDetails({ id }: { id: string }) {
       fetchLand()
     }
   }, [id])
+
+  const handleFavoriteToggle = async () => {
+    if (!land) return
+
+    if (isFavorite(land.id)) {
+      await removeFromFavorites(land.id)
+    } else {
+      await addToFavorites(land.id, "land", {
+        title: land.name,
+        price: typeof land.price === "string" ? Number(land.price) : land.price,
+        image: land.images?.[0] || "",
+        address: land.address,
+      })
+    }
+  }
 
   const nextImage = () => {
     if (land?.images) {
@@ -205,16 +221,17 @@ export default function LandDetails({ id }: { id: string }) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsLiked(!isLiked)}
-                className={isLiked ? "text-red-500 border-red-500" : ""}
+                onClick={handleFavoriteToggle}
+                className={isFavorite(land.id) ? "text-red-500 border-red-500" : ""}
               >
-                <Heart className={`h-4 w-4 mr-1 ${isLiked ? "fill-current" : ""}`} />
-                Favorite
+                <Heart className={`h-4 w-4 mr-1 ${isFavorite(land.id) ? "fill-current" : ""}`} />
+                {isFavorite(land.id) ? "Saved" : "Save"}
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 className="bg-green-600 text-white border-green-600 hover:bg-green-700"
+                onClick={() => setShareModalOpen(true)}
               >
                 <Share2 className="h-4 w-4 mr-1" />
                 Share
@@ -234,7 +251,8 @@ export default function LandDetails({ id }: { id: string }) {
                     <Image
                       src={
                         land.images[selectedImageIndex] ||
-                        "/placeholder.svg?height=500&width=800&query=commercial land plot"
+                        "/placeholder.svg?height=500&width=800&query=commercial land plot" ||
+                        "/placeholder.svg"
                       }
                       alt={`${land.name} - Image ${selectedImageIndex + 1}`}
                       fill
@@ -527,6 +545,16 @@ export default function LandDetails({ id }: { id: string }) {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        propertyTitle={land.name}
+        propertyUrl={`/lands/${land.id}`}
+        propertyImage={land.images?.[0]}
+        propertyPrice={convertAndFormat(land.price)}
+      />
     </div>
   )
 }

@@ -328,7 +328,7 @@ export default function PropertyForm() {
         ...formData,
         images: uploadedImages,
         createdAt: serverTimestamp(),
-        uid: user?.uid,
+        agentId: user?.uid,
       }
 
       await addDoc(collectionRef, propertyData)

@@ -30,6 +30,8 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore"
 import { db } from "@/utils/firebase/config"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
 import { useCurrency } from "@/hooks/useCurrency"
+import { useFavorites } from "@/hooks/useFavorites"
+import { ShareModal } from "@/components/ShareModal"
 
 interface Property {
   id: string
@@ -136,6 +138,12 @@ export default function PropertiesPage() {
   const [error, setError] = useState<string | null>(null)
 
   const { convertAndFormat, loading: currencyLoading } = useCurrency()
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites()
+  const [shareModal, setShareModal] = useState<{
+    isOpen: boolean
+    property?: Property | Land
+    type?: "property" | "land"
+  }>({ isOpen: false })
 
   useEffect(() => {
     const fetchData = async () => {
@@ -207,6 +215,25 @@ export default function PropertiesPage() {
     return matchesSearch && matchesType && matchesTab && matchesPrice
   })
 
+  const handleFavoriteToggle = async (property: Property | Land, type: "property" | "land") => {
+    const propertyId = property.id
+
+    if (isFavorite(propertyId)) {
+      await removeFromFavorites(propertyId)
+    } else {
+      await addToFavorites(propertyId, type, {
+        title: "title" in property ? property.title : property.name,
+        price: typeof property.price === "string" ? Number(property.price) : property.price,
+        image: property.images?.[0] || "",
+        address: property.address || "",
+      })
+    }
+  }
+
+  const handleShare = (property: Property | Land, type: "property" | "land") => {
+    setShareModal({ isOpen: true, property, type })
+  }
+
   const PropertyCard = ({ property }: { property: Property }) => (
     <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md overflow-hidden">
       <div className="relative">
@@ -224,10 +251,22 @@ export default function PropertiesPage() {
           {property.featured && <Badge className="bg-orange-600 hover:bg-orange-700">FEATURED</Badge>}
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
-          <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/90 hover:bg-white">
-            <Heart className="h-4 w-4" />
+          <Button
+            size="icon"
+            variant="secondary"
+            className={`h-8 w-8 bg-white/90 hover:bg-white transition-colors ${
+              isFavorite(property.id) ? "text-red-500" : "text-gray-600"
+            }`}
+            onClick={() => handleFavoriteToggle(property, "property")}
+          >
+            <Heart className={`h-4 w-4 ${isFavorite(property.id) ? "fill-current" : ""}`} />
           </Button>
-          <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/90 hover:bg-white">
+          <Button
+            size="icon"
+            variant="secondary"
+            className="h-8 w-8 bg-white/90 hover:bg-white"
+            onClick={() => handleShare(property, "property")}
+          >
             <Share2 className="h-4 w-4" />
           </Button>
         </div>
@@ -367,10 +406,22 @@ export default function PropertiesPage() {
           <Badge className="bg-green-600 hover:bg-green-700">{(land.availability || "Available").toUpperCase()}</Badge>
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
-          <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/90 hover:bg-white">
-            <Heart className="h-4 w-4" />
+          <Button
+            size="icon"
+            variant="secondary"
+            className={`h-8 w-8 bg-white/90 hover:bg-white transition-colors ${
+              isFavorite(land.id) ? "text-red-500" : "text-gray-600"
+            }`}
+            onClick={() => handleFavoriteToggle(land, "land")}
+          >
+            <Heart className={`h-4 w-4 ${isFavorite(land.id) ? "fill-current" : ""}`} />
           </Button>
-          <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/90 hover:bg-white">
+          <Button
+            size="icon"
+            variant="secondary"
+            className="h-8 w-8 bg-white/90 hover:bg-white"
+            onClick={() => handleShare(land, "land")}
+          >
             <Share2 className="h-4 w-4" />
           </Button>
         </div>
@@ -494,33 +545,35 @@ export default function PropertiesPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Properties</h1>
-              <p className="text-gray-600 mt-1">{filteredProperties.length + lands.length} properties available</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Properties</h1>
+              <p className="text-gray-600 mt-1 text-sm sm:text-base">
+                {filteredProperties.length + lands.length} properties available
+              </p>
             </div>
             <Link href="/create-property">
-              <Button className="bg-blue-600 hover:bg-blue-700">List Your Property</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">List Your Property</Button>
             </Link>
           </div>
 
           {/* Search and Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="sm:col-span-2 lg:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   placeholder="Search by location, property name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-10 sm:h-11"
                 />
               </div>
             </div>
             <div>
               <Select value={propertyType} onValueChange={setPropertyType}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Property Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -536,7 +589,7 @@ export default function PropertiesPage() {
             </div>
             <div>
               <Select value={priceRange} onValueChange={setPriceRange}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Price Range" />
                 </SelectTrigger>
                 <SelectContent>
@@ -550,7 +603,7 @@ export default function PropertiesPage() {
             </div>
             <div>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent>
@@ -566,19 +619,19 @@ export default function PropertiesPage() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="all" className="text-base">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 sm:mb-8 h-auto">
+            <TabsTrigger value="all" className="text-sm sm:text-base py-2 sm:py-3">
               All Properties
             </TabsTrigger>
-            <TabsTrigger value="sale" className="text-base">
+            <TabsTrigger value="sale" className="text-sm sm:text-base py-2 sm:py-3">
               For Sale
             </TabsTrigger>
-            <TabsTrigger value="rent" className="text-base">
+            <TabsTrigger value="rent" className="text-sm sm:text-base py-2 sm:py-3">
               For Rent
             </TabsTrigger>
-            <TabsTrigger value="land" className="text-base">
+            <TabsTrigger value="land" className="text-sm sm:text-base py-2 sm:py-3">
               Land
             </TabsTrigger>
           </TabsList>
@@ -587,8 +640,8 @@ export default function PropertiesPage() {
             {/* Properties Section */}
             {filteredProperties.length > 0 && (
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Residential Properties</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Residential Properties</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {filteredProperties.map((property) => (
                     <PropertyCard key={property.id} property={property} />
                   ))}
@@ -599,8 +652,8 @@ export default function PropertiesPage() {
             {/* Land Section */}
             {lands.length > 0 && (
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Land & Lots</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Land & Lots</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {lands.map((land) => (
                     <LandCard key={land.id} land={land} />
                   ))}
@@ -610,7 +663,7 @@ export default function PropertiesPage() {
           </TabsContent>
 
           <TabsContent value="sale">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredProperties
                 .filter((p) => p.listingType === "For Sale")
                 .map((property) => (
@@ -620,7 +673,7 @@ export default function PropertiesPage() {
           </TabsContent>
 
           <TabsContent value="rent">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredProperties
                 .filter((p) => p.listingType === "For Rent")
                 .map((property) => (
@@ -630,7 +683,7 @@ export default function PropertiesPage() {
           </TabsContent>
 
           <TabsContent value="land">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {lands.map((land) => (
                 <LandCard key={land.id} land={land} />
               ))}
@@ -659,6 +712,36 @@ export default function PropertiesPage() {
           </div>
         )}
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={() => setShareModal({ isOpen: false })}
+        propertyTitle={
+          shareModal.property
+            ? "title" in shareModal.property
+              ? shareModal.property.title
+              : shareModal.property.name
+            : ""
+        }
+        propertyUrl={
+          shareModal.property
+            ? `/${shareModal.type === "property" ? "properties" : "lands"}/${shareModal.property.id}`
+            : ""
+        }
+        propertyImage={shareModal.property?.images?.[0]}
+        propertyPrice={
+          shareModal.property
+            ? currencyLoading
+              ? "Loading..."
+              : convertAndFormat(
+                  typeof shareModal.property.price === "string"
+                    ? Number(shareModal.property.price)
+                    : shareModal.property.price,
+                )
+            : ""
+        }
+      />
     </div>
   )
 }

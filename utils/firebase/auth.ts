@@ -1,3 +1,5 @@
+//utils/firebase/auth.ts
+
 export async function setSessionCookie(idToken: string) {
   const response = await fetch('/api/auth/session', {
     method: 'POST',
