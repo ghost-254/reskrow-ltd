@@ -1,6 +1,5 @@
 //components/list-properties/property-form
 
-
 "use client"
 
 import type React from "react"
@@ -223,7 +222,11 @@ const steps = [
   { id: 5, title: "Agent Info", icon: FileText },
 ]
 
-export default function PropertyForm() {
+interface PropertyFormProps {
+  propertyCategory: string
+}
+
+export default function PropertyForm({ propertyCategory }: PropertyFormProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData)
   const [currentStep, setCurrentStep] = useState(0)
   const [imagePreviews, setImagePreviews] = useState<string[]>([])

@@ -8,9 +8,10 @@ import { ArrowLeft } from "lucide-react"
 
 interface PropertyUploadProps {
   onBack: () => void
+  propertyCategory: string
 }
 
-export default function PropertyUpload({ onBack }: PropertyUploadProps) {
+export default function PropertyUpload({ onBack, propertyCategory }: PropertyUploadProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8">
       <div className="container mx-auto px-4">
@@ -24,7 +25,7 @@ export default function PropertyUpload({ onBack }: PropertyUploadProps) {
           <p className="text-gray-600">Fill out the details below to create your property listing</p>
         </div>
 
-        <PropertyForm />
+        <PropertyForm propertyCategory={propertyCategory} />
       </div>
     </div>
   )

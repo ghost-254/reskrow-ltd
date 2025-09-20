@@ -61,7 +61,6 @@ export default function Header() {
             </DropdownMenu>
             <Link href="/rent" className="text-foreground hover:text-primary">Rent</Link>
             <Link href="/buy" className="text-foreground hover:text-primary">Buy</Link>
-            <Link href="/sell" className="text-foreground hover:text-primary">Sell</Link>
             <Link href="/escrow" className="text-foreground hover:text-primary">Escrow</Link>
             <Link href="/contact" className="text-foreground hover:text-primary">Contact Us</Link>
           </nav>

@@ -1,4 +1,4 @@
-//components/list-properties/land-form.tsx
+//components/list-properties/land-form-new.tsx
 
 "use client"
 
@@ -112,13 +112,17 @@ export default function LandForm() {
   }
 
   const saveLandToFirestore = async (imageUrls: string[]) => {
+    const mappedListingType = formData.availability.toLowerCase()
+
     const landData = {
       ...formData,
+      listingType: mappedListingType, // Use listingType instead of availability
+      availability: `For ${formData.availability}`, // Map "Sale" to "For Sale", "Lease" to "For Lease"
       images: imageUrls,
       agentId: user?.uid,
-      agentName: profile?.agentName,
-      agentPhone: profile?.agentPhone,
-      agentEmail: profile?.agentEmail,
+      agentName: profile?.agentName || profile?.name || user?.displayName || "Agent",
+      agentPhone: profile?.agentPhone || profile?.phone || "",
+      agentEmail: profile?.agentEmail || profile?.email || user?.email || "",
       createdAt: new Date(),
     }
     const landCollection = collection(db, "lands")

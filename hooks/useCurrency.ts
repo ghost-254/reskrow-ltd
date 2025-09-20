@@ -7,7 +7,7 @@ interface CurrencyHook {
   currency: string
   currencySymbol: string
   loading: boolean
-  convertAndFormat: (priceInHKD: number) => string
+  convertAndFormat: (priceInUSD: number) => string
 }
 
 export function useCurrency(): CurrencyHook {
@@ -31,8 +31,8 @@ export function useCurrency(): CurrencyHook {
     initializeCurrency()
   }, [])
 
-  const convertAndFormat = (priceInHKD: number): string => {
-    const convertedPrice = convertPrice(priceInHKD, currency)
+  const convertAndFormat = (priceInUSD: number): string => {
+    const convertedPrice = convertPrice(priceInUSD, currency)
     return formatPrice(convertedPrice, currency)
   }
 

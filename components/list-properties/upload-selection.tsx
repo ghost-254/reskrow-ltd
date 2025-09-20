@@ -1,19 +1,25 @@
-//components/list-properties/upload-selection.tsx
-
 "use client"
 
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Building, Trees } from "lucide-react"
+import { Building, Building2, Factory, Trees } from "lucide-react"
 import PropertyUpload from "./property-upload"
 import LandUpload from "./land-upload"
 
 export default function UploadSelection() {
-  const [selectedType, setSelectedType] = useState<"property" | "land" | null>(null)
+  const [selectedType, setSelectedType] = useState<"residential" | "commercial" | "industrial" | "land" | null>(null)
 
-  if (selectedType === "property") {
-    return <PropertyUpload onBack={() => setSelectedType(null)} />
+  if (selectedType === "residential") {
+    return <PropertyUpload onBack={() => setSelectedType(null)} propertyCategory="residential" />
+  }
+
+  if (selectedType === "commercial") {
+    return <PropertyUpload onBack={() => setSelectedType(null)} propertyCategory="commercial" />
+  }
+
+  if (selectedType === "industrial") {
+    return <PropertyUpload onBack={() => setSelectedType(null)} propertyCategory="industrial" />
   }
 
   if (selectedType === "land") {
@@ -31,20 +37,56 @@ export default function UploadSelection() {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
             <CardContent className="p-0">
               <Button
-                onClick={() => setSelectedType("property")}
-                className="w-full h-full flex flex-col items-center justify-center p-12 space-y-6 bg-white hover:bg-blue-50 transition-colors duration-300"
+                onClick={() => setSelectedType("residential")}
+                className="w-full h-full flex flex-col items-center justify-center p-8 space-y-4 bg-white hover:bg-blue-50 transition-colors duration-300"
                 variant="ghost"
               >
-                <div className="p-6 bg-blue-100 rounded-full group-hover:bg-blue-200 transition-colors duration-300">
-                  <Building size={48} className="text-blue-600" />
+                <div className="p-4 bg-blue-100 rounded-full group-hover:bg-blue-200 transition-colors duration-300">
+                  <Building size={32} className="text-blue-600" />
                 </div>
                 <div className="text-center">
-                  <span className="text-2xl font-bold text-gray-900 block mb-2">Residential Property</span>
-                  <span className="text-gray-600">Houses, Apartments, Condos & More</span>
+                  <span className="text-lg font-bold text-gray-900 block mb-1">Residential</span>
+                  <span className="text-sm text-gray-600">Houses, Apartments, Condos</span>
+                </div>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
+            <CardContent className="p-0">
+              <Button
+                onClick={() => setSelectedType("commercial")}
+                className="w-full h-full flex flex-col items-center justify-center p-8 space-y-4 bg-white hover:bg-purple-50 transition-colors duration-300"
+                variant="ghost"
+              >
+                <div className="p-4 bg-purple-100 rounded-full group-hover:bg-purple-200 transition-colors duration-300">
+                  <Building2 size={32} className="text-purple-600" />
+                </div>
+                <div className="text-center">
+                  <span className="text-lg font-bold text-gray-900 block mb-1">Commercial</span>
+                  <span className="text-sm text-gray-600">Offices, Retail, Hotels</span>
+                </div>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
+            <CardContent className="p-0">
+              <Button
+                onClick={() => setSelectedType("industrial")}
+                className="w-full h-full flex flex-col items-center justify-center p-8 space-y-4 bg-white hover:bg-orange-50 transition-colors duration-300"
+                variant="ghost"
+              >
+                <div className="p-4 bg-orange-100 rounded-full group-hover:bg-orange-200 transition-colors duration-300">
+                  <Factory size={32} className="text-orange-600" />
+                </div>
+                <div className="text-center">
+                  <span className="text-lg font-bold text-gray-900 block mb-1">Industrial</span>
+                  <span className="text-sm text-gray-600">Factories, Warehouses</span>
                 </div>
               </Button>
             </CardContent>
@@ -54,15 +96,15 @@ export default function UploadSelection() {
             <CardContent className="p-0">
               <Button
                 onClick={() => setSelectedType("land")}
-                className="w-full h-full flex flex-col items-center justify-center p-12 space-y-6 bg-white hover:bg-green-50 transition-colors duration-300"
+                className="w-full h-full flex flex-col items-center justify-center p-8 space-y-4 bg-white hover:bg-green-50 transition-colors duration-300"
                 variant="ghost"
               >
-                <div className="p-6 bg-green-100 rounded-full group-hover:bg-green-200 transition-colors duration-300">
-                  <Trees size={48} className="text-green-600" />
+                <div className="p-4 bg-green-100 rounded-full group-hover:bg-green-200 transition-colors duration-300">
+                  <Trees size={32} className="text-green-600" />
                 </div>
                 <div className="text-center">
-                  <span className="text-2xl font-bold text-gray-900 block mb-2">Land & Lots</span>
-                  <span className="text-gray-600">Residential, Commercial & Agricultural Land</span>
+                  <span className="text-lg font-bold text-gray-900 block mb-1">Raw Land</span>
+                  <span className="text-sm text-gray-600">Agricultural, Development</span>
                 </div>
               </Button>
             </CardContent>

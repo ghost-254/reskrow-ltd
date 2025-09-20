@@ -1,4 +1,4 @@
-//components/list-properties/land-upload.tsx
+//components/list-properties/land-upload-new.tsx
 
 "use client"
 

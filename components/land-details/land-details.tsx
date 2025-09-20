@@ -1,3 +1,5 @@
+//components/land-details/land-details.tsx
+
 "use client"
 
 import { useState, useEffect } from "react"
