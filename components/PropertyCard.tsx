@@ -48,7 +48,8 @@ export function PropertyCard({
         />
         {listingType && <Badge className="absolute top-3 left-3 bg-blue-600 hover:bg-blue-700">{listingType}</Badge>}
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
-          <span className="text-lg font-bold text-gray-900">${price?.toLocaleString() || "0"}</span>
+          <span className="text-lg font-bold text-gray-900">KSh{price?.toLocaleString() || "0"}</span>{" "}
+          {/* Changed from $ to KSh */}
         </div>
       </div>
 

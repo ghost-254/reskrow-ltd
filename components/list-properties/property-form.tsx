@@ -147,6 +147,15 @@ const propertyTypes = {
   residential: ["House", "Apartment", "Condo", "Townhouse", "Villa", "Studio", "Loft", "Duplex"],
   commercial: ["Office", "Retail", "Warehouse", "Restaurant", "Hotel", "Mixed Use"],
   industrial: ["Factory", "Manufacturing", "Storage", "Distribution Center"],
+  rawland: [
+    "Agricultural Land",
+    "Residential Plot",
+    "Commercial Plot",
+    "Industrial Plot",
+    "Vacant Land",
+    "Farm Land",
+    "Development Land",
+  ],
 }
 
 const listingTypes = ["For Sale", "For Rent", "For Lease"]
@@ -327,8 +336,15 @@ export default function PropertyForm({ propertyCategory }: PropertyFormProps) {
       )
 
       const collectionRef = collection(db, "properties")
+
+      let mappedListingType = formData.listingType.toLowerCase()
+      if (mappedListingType === "for sale") mappedListingType = "sale"
+      if (mappedListingType === "for rent") mappedListingType = "rent"
+      if (mappedListingType === "for lease") mappedListingType = "lease"
+
       const propertyData = {
         ...formData,
+        listingType: mappedListingType,
         images: uploadedImages,
         createdAt: serverTimestamp(),
         agentId: user?.uid,
@@ -495,14 +511,22 @@ export default function PropertyForm({ propertyCategory }: PropertyFormProps) {
                   </div>
 
                   <div>
-                    <Label className="text-base font-medium">Price *</Label>
-                    <Input
-                      type="number"
-                      value={formData.price || ""}
-                      onChange={(e) => handleInputChange("price", e.target.value ? Number(e.target.value) : null)}
-                      placeholder="Enter price"
-                      className="mt-2"
-                    />
+                    <Label className="text-base font-medium">Price (KES) *</Label>
+                    <div className="relative mt-2">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+                        KSh
+                      </span>
+                      <Input
+                        type="number"
+                        value={formData.price || ""}
+                        onChange={(e) => handleInputChange("price", e.target.value ? Number(e.target.value) : null)}
+                        placeholder="Enter price in Kenya Shillings"
+                        className="pl-12"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Enter the price in Kenya Shillings (KES). This will be stored as KES in the database.
+                    </p>
                   </div>
 
                   <div>
@@ -955,7 +979,7 @@ export default function PropertyForm({ propertyCategory }: PropertyFormProps) {
                         <span className="font-medium">Type:</span> {formData.propertySubtype || "Not specified"}
                       </div>
                       <div>
-                        <span className="font-medium">Price:</span> $
+                        <span className="font-medium">Price:</span> KSh
                         {formData.price?.toLocaleString() || "Not specified"}
                       </div>
                       <div>

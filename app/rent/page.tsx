@@ -187,14 +187,14 @@ export default function RentPage() {
       if (priceRange === "all") return true
       const price = property.price
       switch (priceRange) {
-        case "0-2000":
-          return price < 2000
-        case "2000-5000":
-          return price >= 2000 && price < 5000
-        case "5000-10000":
-          return price >= 5000 && price < 10000
-        case "10000+":
-          return price >= 10000
+        case "0-50000": // Updated price ranges from USD to KES
+          return price < 50000
+        case "50000-150000":
+          return price >= 50000 && price < 150000
+        case "150000-300000":
+          return price >= 150000 && price < 300000
+        case "300000+":
+          return price >= 300000
         default:
           return true
       }
@@ -616,10 +616,10 @@ export default function RentPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Prices</SelectItem>
-                    <SelectItem value="0-2000">Under $2,000</SelectItem>
-                    <SelectItem value="2000-5000">$2,000 - $5,000</SelectItem>
-                    <SelectItem value="5000-10000">$5,000 - $10,000</SelectItem>
-                    <SelectItem value="10000+">Above $10,000</SelectItem>
+                    <SelectItem value="0-50000">Under KSh50,000</SelectItem>
+                    <SelectItem value="50000-150000">KSh50,000 - KSh150,000</SelectItem>
+                    <SelectItem value="150000-300000">KSh150,000 - KSh300,000</SelectItem>
+                    <SelectItem value="300000+">Above KSh300,000</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -645,14 +645,14 @@ export default function RentPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Properties for Rent</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Properties for Rent & Lease</h2>
               <p className="text-muted-foreground">
                 {filteredProperties.length + lands.length} rental properties available
               </p>
             </div>
             <TabsList className="grid w-full sm:w-auto grid-cols-4 h-auto">
               <TabsTrigger value="all" className="text-sm py-2 px-4">
-                All Rentals
+                All Rentals Leases
               </TabsTrigger>
               <TabsTrigger value="rent" className="text-sm py-2 px-4">
                 For Rent
@@ -661,7 +661,7 @@ export default function RentPage() {
                 For Lease
               </TabsTrigger>
               <TabsTrigger value="land" className="text-sm py-2 px-4">
-                Land Lease
+                Lands For Lease
               </TabsTrigger>
             </TabsList>
           </div>

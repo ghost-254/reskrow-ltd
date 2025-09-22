@@ -13,7 +13,7 @@ import Image from "next/image"
 import { Upload, X } from "lucide-react"
 import { db, storage } from "@/utils/firebase/config"
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
-import { addDoc, collection } from "firebase/firestore" // Removed serverTimestamp import since it wasn't used
+import { addDoc, collection } from "firebase/firestore"
 import { useToast } from "@/hooks/use-toast"
 import { useFirebase } from "@/app/firebase-provider"
 import dynamic from "next/dynamic"
@@ -120,9 +120,9 @@ export default function LandForm() {
       availability: `For ${formData.availability}`, // Map "Sale" to "For Sale", "Lease" to "For Lease"
       images: imageUrls,
       agentId: user?.uid,
-      agentName: profile?.agentName || profile?.name || user?.displayName || "Agent",
-      agentPhone: profile?.agentPhone || profile?.phone || "",
-      agentEmail: profile?.agentEmail || profile?.email || user?.email || "",
+      agentName: profile?.agentName || user?.displayName || "Agent",
+      agentPhone: profile?.agentPhone || user?.phoneNumber || "",
+      agentEmail: profile?.agentEmail || user?.email || "",
       createdAt: new Date(),
     }
     const landCollection = collection(db, "lands")
@@ -313,16 +313,23 @@ export default function LandForm() {
           />
         </div>
         <div>
-          <Label htmlFor="price">Price</Label>
-          <Input
-            id="price"
-            name="price"
-            type="number"
-            value={formData.price}
-            onChange={handleInputChange}
-            required
-            className="mt-1"
-          />
+          <Label htmlFor="price">Price (KES) *</Label>
+          <div className="relative mt-1">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">KSh</span>
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleInputChange}
+              placeholder="Enter price in Kenya Shillings"
+              required
+              className="pl-12"
+            />
+          </div>
+          <p className="text-sm text-gray-600 mt-1">
+            Enter the price in Kenya Shillings (KES). This will be stored as KES in the database.
+          </p>
         </div>
         <div>
           <Label htmlFor="size">Size (acres)</Label>

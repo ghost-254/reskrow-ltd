@@ -1,5 +1,3 @@
-//components/land-details/land-details.tsx
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -254,6 +252,7 @@ export default function LandDetails({ id }: { id: string }) {
                       src={
                         land.images[selectedImageIndex] ||
                         "/placeholder.svg?height=500&width=800&query=commercial land plot" ||
+                        "/placeholder.svg" ||
                         "/placeholder.svg"
                       }
                       alt={`${land.name} - Image ${selectedImageIndex + 1}`}
@@ -532,7 +531,7 @@ export default function LandDetails({ id }: { id: string }) {
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-bold text-gray-900 mb-4">Location</h3>
-                <div className="h-48">
+                <div className="h-64 sm:h-72 md:h-80 lg:h-64 xl:h-72 w-full">
                   <LeafletMap
                     center={[land.location.lat, land.location.lng]}
                     zoom={15}
@@ -541,7 +540,6 @@ export default function LandDetails({ id }: { id: string }) {
                     addressInput={null}
                   />
                 </div>
-                
               </CardContent>
             </Card>
           </div>

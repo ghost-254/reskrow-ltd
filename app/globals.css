@@ -132,6 +132,7 @@
   }
 }
 
+
 .animate-blob {
   animation: blob 7s infinite;
 }
@@ -142,4 +143,25 @@
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+/* Added custom animations and effects for modern feel */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }

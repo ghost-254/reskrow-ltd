@@ -1,17 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getUserLocation, getCurrencyByCountry, getCurrencyInfo, convertPrice, formatPrice } from "@/utils/currency"
+import { getUserLocation, getCurrencyByCountry, getCurrencyInfo, formatPrice } from "@/utils/currency"
 
 interface CurrencyHook {
   currency: string
   currencySymbol: string
   loading: boolean
-  convertAndFormat: (priceInUSD: number) => string
+  convertAndFormat: (priceInKES: number) => string
 }
 
 export function useCurrency(): CurrencyHook {
-  const [currency, setCurrency] = useState("USD")
+  const [currency, setCurrency] = useState("KES") // Default to KES
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -21,8 +21,8 @@ export function useCurrency(): CurrencyHook {
         const currencyCode = getCurrencyByCountry(countryCode)
         setCurrency(currencyCode)
       } catch (error) {
-        console.log("[v0] Failed to initialize currency, using USD:", error)
-        setCurrency("USD")
+        console.log("[v0] Failed to initialize currency, using KES:", error)
+        setCurrency("KES")
       } finally {
         setLoading(false)
       }
@@ -31,9 +31,9 @@ export function useCurrency(): CurrencyHook {
     initializeCurrency()
   }, [])
 
-  const convertAndFormat = (priceInUSD: number): string => {
-    const convertedPrice = convertPrice(priceInUSD, currency)
-    return formatPrice(convertedPrice, currency)
+  const convertAndFormat = (priceInKES: number): string => {
+    // Simplified to just format KES prices
+    return formatPrice(priceInKES, "KES")
   }
 
   const currencyInfo = getCurrencyInfo(currency)

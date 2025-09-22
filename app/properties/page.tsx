@@ -553,7 +553,7 @@ export default function PropertiesPage() {
                 {filteredProperties.length + lands.length} properties available
               </p>
             </div>
-            <Link href="/create-property">
+            <Link href="/properties/create/">
               <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">List Your Property</Button>
             </Link>
           </div>
@@ -593,11 +593,11 @@ export default function PropertiesPage() {
                   <SelectValue placeholder="Price Range" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Prices</SelectItem>
-                  <SelectItem value="0-1000000">Under $1M</SelectItem>
-                  <SelectItem value="1000000-5000000">$1M - $5M</SelectItem>
-                  <SelectItem value="5000000-10000000">$5M - $10M</SelectItem>
-                  <SelectItem value="10000000+">Above $10M</SelectItem>
+                <SelectItem value="all">All Prices</SelectItem>
+                    <SelectItem value="0-1000000">Under KSh1M</SelectItem>
+                    <SelectItem value="1000000-5000000">KSh1M - KSh5M</SelectItem>
+                    <SelectItem value="5000000-10000000">KSh5M - KSh10M</SelectItem>
+                    <SelectItem value="10000000+">Above KSh10M</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -632,7 +632,7 @@ export default function PropertiesPage() {
               For Rent
             </TabsTrigger>
             <TabsTrigger value="land" className="text-sm sm:text-base py-2 sm:py-3">
-              Land
+              Raw Land
             </TabsTrigger>
           </TabsList>
 

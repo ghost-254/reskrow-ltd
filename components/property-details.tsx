@@ -268,6 +268,7 @@ export default function PropertyDetails({ id }: { id: string }) {
                       src={
                         property.images[selectedImageIndex] ||
                         "/placeholder.svg?height=500&width=800&query=property interior" ||
+                        "/placeholder.svg" ||
                         "/placeholder.svg"
                       }
                       alt={`${property.title} - Image ${selectedImageIndex + 1}`}
@@ -624,7 +625,7 @@ export default function PropertyDetails({ id }: { id: string }) {
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-bold text-gray-900 mb-4">Location</h3>
-                <div className="h-48">
+                <div className="h-64 sm:h-72 md:h-80 lg:h-64 xl:h-72 w-full">
                   <LeafletMap
                     center={[property.location.lat, property.location.lng]}
                     zoom={15}

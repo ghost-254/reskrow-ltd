@@ -147,7 +147,7 @@ export default function BuyPage() {
 
         const landsQuery = query(
           collection(db, "lands"),
-          where("availability", "==", "For Sale"),
+          where("availability", "==", "For Sale"), // Fix land query to match the correct availability format
           orderBy("createdAt", "desc"),
         )
         const landsSnapshot = await getDocs(landsQuery)
@@ -562,7 +562,7 @@ export default function BuyPage() {
 
         <div className="absolute bottom-0 right-0 w-1/3 h-full opacity-20">
           <Image
-            src="/modern-architectural.jpg"
+            src="/modern-architectural-building-exterior.jpg"
             alt="Modern Architecture"
             width={400}
             height={600}
@@ -574,7 +574,7 @@ export default function BuyPage() {
       <div className="bg-card border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 justify-center">
               <div className="sm:col-span-2 lg:col-span-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -609,10 +609,10 @@ export default function BuyPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Prices</SelectItem>
-                    <SelectItem value="0-1000000">Under $1M</SelectItem>
-                    <SelectItem value="1000000-5000000">$1M - $5M</SelectItem>
-                    <SelectItem value="5000000-10000000">$5M - $10M</SelectItem>
-                    <SelectItem value="10000000+">Above $10M</SelectItem>
+                    <SelectItem value="0-1000000">Under KSh1M</SelectItem>
+                    <SelectItem value="1000000-5000000">KSh1M - KSh5M</SelectItem>
+                    <SelectItem value="5000000-10000000">KSh5M - KSh10M</SelectItem>
+                    <SelectItem value="10000000+">Above KSh10M</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
