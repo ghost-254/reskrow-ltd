@@ -328,7 +328,7 @@ export default function LandForm() {
             />
           </div>
           <p className="text-sm text-gray-600 mt-1">
-            Enter the price in Kenya Shillings (KES). This will be stored as KES in the database.
+            Enter the price in Kenya Shillings (KES).
           </p>
         </div>
         <div>

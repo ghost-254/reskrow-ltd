@@ -6,7 +6,6 @@ import {
   FaShieldAlt,
   FaDollarSign,
   FaArrowRight,
-  FaHome,
   FaHandshake,
   FaChartLine,
   FaUsers,
@@ -15,7 +14,6 @@ import {
 } from "react-icons/fa"
 import { MdSpeed } from "react-icons/md"
 import Image from "next/image"
-import Link from "next/link"
 
 export default function EscrowPage() {
   return (
@@ -54,7 +52,7 @@ export default function EscrowPage() {
 
               <div className="flex items-center gap-8 pt-8 border-t border-border">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">$2.5B+</div>
+                  <div className="text-2xl font-bold text-primary">$2.5M+</div>
                   <div className="text-sm text-muted-foreground">Secured</div>
                 </div>
                 <div className="text-center">
@@ -136,11 +134,15 @@ export default function EscrowPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-gradient-to-b from-background to-accent/10">
-        <div className="container mx-auto px-4">
+      <section
+        className="relative py-24 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/escrow-security.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Why Choose Reskrow?</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4 text-white">Why Choose Reskrow?</h2>
+            <p className="text-xl text-gray-200 max-w-2xl mx-auto">
               Industry-leading security, transparency, and support for your peace of mind.
             </p>
           </div>
@@ -151,30 +153,30 @@ export default function EscrowPage() {
                 icon: FaShieldAlt,
                 title: "Bank-Level Security",
                 description: "Your funds are protected with enterprise-grade encryption and security protocols.",
-                color: "text-blue-500",
+                color: "text-blue-400",
               },
               {
                 icon: MdSpeed,
                 title: "Lightning Fast",
                 description: "Complete transactions 3x faster than traditional escrow services.",
-                color: "text-green-500",
+                color: "text-green-400",
               },
               {
                 icon: FaUsers,
                 title: "Expert Support",
                 description: "Dedicated escrow specialists available 24/7 to guide you through every step.",
-                color: "text-purple-500",
+                color: "text-purple-400",
               },
               {
                 icon: FaChartLine,
                 title: "Transparent Pricing",
                 description: "No hidden fees. Clear, competitive pricing with detailed breakdowns.",
-                color: "text-orange-500",
+                color: "text-orange-400",
               },
             ].map((feature, index) => (
               <Card
                 key={index}
-                className="group hover:shadow-2xl transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm hover:-translate-y-2"
+                className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/90 backdrop-blur-sm hover:-translate-y-2"
               >
                 <CardHeader className="text-center pb-4">
                   <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -187,51 +189,6 @@ export default function EscrowPage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="relative py-24 bg-gradient-to-r from-primary via-primary/90 to-primary text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-4xl lg:text-5xl font-bold text-balance">Ready to Experience the Future of Escrow?</h2>
-            <p className="text-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
-              Join thousands of satisfied customers who trust Reskrow for their real estate transactions.
-            </p>
-
-            <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
-              <Button size="lg" variant="secondary" className="text-lg px-10 py-6 group">
-                <Link href="/buy" className="flex items-center">
-                  <FaHome className="w-5 h-5 mr-3" />
-                  I'm Buying
-                  <FaArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-10 py-6 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground hover:text-primary group bg-transparent"
-              >
-                <Link href="/sell" className="flex items-center">
-                  <FaDollarSign className="w-5 h-5 mr-3" />
-                  I'm Selling
-                  <FaArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-            </div>
-
-            <div className="pt-12 border-t border-primary-foreground/20">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <blockquote className="text-lg italic opacity-90">
-                "Reskrow made our home purchase incredibly smooth. The transparency and speed were amazing!"
-              </blockquote>
-              <cite className="text-sm opacity-75 mt-2 block">- Sarah M., Recent Home Buyer</cite>
-            </div>
           </div>
         </div>
       </section>
